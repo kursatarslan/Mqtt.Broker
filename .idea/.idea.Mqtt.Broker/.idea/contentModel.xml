@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
+      <e p="Mqtt.Application" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Contracts" t="Include">
+          <e p="ISecretProvider.cs" t="Include" />
+          <e p="IServerBuilder.cs" t="Include" />
+        </e>
+        <e p="Helpers" t="Include">
+          <e p="Functions.cs" t="Include" />
+        </e>
+        <e p="Mqtt.Application.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Mqtt.Application.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Services" t="Include">
+          <e p="Hosted" t="Include">
+            <e p="MqttService.cs" t="Include" />
+          </e>
+          <e p="MqttServerApplicationMessageInterceptor.cs" t="Include" />
+          <e p="MqttServerConnectionValidator.cs" t="Include" />
+          <e p="MqttServerSubscriptionInterceptor.cs" t="Include" />
+          <e p="MqttStorage.cs" t="Include" />
+          <e p="SecretProvider.cs" t="Include" />
+          <e p="ServerBuilder.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Mqtt.Broker.sln" t="IncludeFlat" />
+      <e p="Mqtt.Client" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Mqtt.Client.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Mqtt.Client.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+      </e>
+      <e p="Mqtt.Context" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="DataContext.cs" t="Include" />
+        <e p="Migrations" t="Include">
+          <e p="20200922061335_InitialCreate.cs" t="Include" />
+          <e p="20200922061335_InitialCreate.Designer.cs" t="Include" />
+          <e p="DataContextModelSnapshot.cs" t="Include" />
+        </e>
+        <e p="Mqtt.Context.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Mqtt.Context.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Storage.cs" t="Include" />
+      </e>
+      <e p="Mqtt.Data" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Contracts" t="Include">
+          <e p="IMqttRepository.cs" t="Include" />
+        </e>
+        <e p="Mqtt.Data.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Mqtt.Data.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Repositories" t="Include">
+          <e p="MqttRepository.cs" t="Include" />
+        </e>
+      </e>
+      <e p="Mqtt.Domain" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Enum" t="Include">
+          <e p="Maneuver.cs" t="Include" />
+        </e>
+        <e p="Models" t="Include">
+          <e p="Audit.cs" t="Include" />
+          <e p="Connection.cs" t="Include" />
+          <e p="Log.cs" t="Include" />
+          <e p="MqttMessage.cs" t="Include" />
+          <e p="MqttUser.cs" t="Include" />
+          <e p="Payload.cs" t="Include" />
+          <e p="Platoon.cs" t="Include" />
+          <e p="Subscribe.cs" t="Include" />
+        </e>
+        <e p="Mqtt.Domain.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="Mqtt.Domain.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Mqtt.Server" t="IncludeRecursive">
+        <e p="appsettings.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Mqtt.Server.csproj" t="IncludeRecursive" />
+        <e p="nlog.config" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Mqtt.Server.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="ReadMe.md" t="Include" />
+        <e p="Startup.cs" t="Include" />
+      </e>
+      <e p="Mqtt.WebApi" t="IncludeRecursive">
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Controllers" t="Include">
+          <e p="WeatherForecastController.cs" t="Include" />
+        </e>
+        <e p="Mqtt.WebApi.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="Mqtt.WebApi.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="Startup.cs" t="Include" />
+        <e p="WeatherForecast.cs" t="Include" />
+      </e>
+      <e p="MQTTnet.AspnetCore" t="IncludeRecursive">
+        <e p="AspNetMqttServerOptionsBuilder.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Client" t="Include">
+          <e p="MqttClientConnectionContextFactory.cs" t="Include" />
+          <e p="Tcp" t="Include">
+            <e p="BufferExtensions.cs" t="Include" />
+            <e p="DuplexPipe.cs" t="Include" />
+            <e p="SocketAwaitable.cs" t="Include" />
+            <e p="SocketReceiver.cs" t="Include" />
+            <e p="SocketSender.cs" t="Include" />
+            <e p="TcpConnection.cs" t="Include" />
+          </e>
+        </e>
+        <e p="extensions" t="Include">
+          <e p="ApplicationBuilderExtensions.cs" t="Include" />
+          <e p="ConnectionBuilderExtensions.cs" t="Include" />
+          <e p="ConnectionRouteBuilderExtensions.cs" t="Include" />
+          <e p="EndpointRouterExtensions.cs" t="Include" />
+          <e p="ReaderExtensions.cs" t="Include" />
+          <e p="ServiceCollectionExtensions.cs" t="Include" />
+        </e>
+        <e p="MqttConnectionContext.cs" t="Include" />
+        <e p="MqttConnectionHandler.cs" t="Include" />
+        <e p="MqttHostedServer.cs" t="Include" />
+        <e p="MQTTnet.AspNetCore.csproj" t="IncludeRecursive" />
+        <e p="MqttSubProtocolSelector.cs" t="Include" />
+        <e p="MqttWebSocketServerAdapter.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp2.1" t="Include">
+              <e p="MQTTnet.AspNetCore.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netcoreapp3.1" t="Include">
+              <e p="MQTTnet.AspNetCore.AssemblyInfo.cs" t="Include" />
+            </e>
+            <e p="netstandard2.0" t="Include">
+              <e p="MQTTnet.AspNetCore.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="SpanBasedMqttPacketBodyReader.cs" t="Include" />
+        <e p="SpanBasedMqttPacketWriter.cs" t="Include" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+    <e p="$APPLICATION_CONFIG_DIR$/consoles/db" t="IncludeRecursive" />
+    <e p="$APPLICATION_CONFIG_DIR$/extensions" t="IncludeRecursive" />
+    <e p="$APPLICATION_CONFIG_DIR$/scratches" t="IncludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.2/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.2/resharper-host/local/Transient/Rider/v202/SolutionCaches/_Mqtt.Broker.1709970710.00" t="ExcludeRecursive" />
+  </component>
+</project>

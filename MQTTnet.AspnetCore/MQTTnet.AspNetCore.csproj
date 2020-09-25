@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+    <Product />
+    <Company />
+    <Authors />
+    <PackageId />
+    <LangVersion>7.2</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>RELEASE;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+    
+  <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.1'">
+    <PackageReference Include="Microsoft.AspNetCore.Http.Connections" Version="1.1.0" />
+  </ItemGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="MQTTnet" Version="3.0.11" />
+    <PackageReference Include="System.IO.Pipelines" Version="4.7.2" />
+  </ItemGroup>
+
+</Project>

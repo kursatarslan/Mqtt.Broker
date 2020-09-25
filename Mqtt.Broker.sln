@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Client", "Mqtt.Client\Mqtt.Client.csproj", "{775567E3-BB3A-45E0-8734-C85A73E97F2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Server", "Mqtt.Server\Mqtt.Server.csproj", "{9F732426-DEF4-48ED-A1A8-C77B65399466}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Context", "Mqtt.Context\Mqtt.Context.csproj", "{D754FF70-68E9-4C12-AF59-133C3462EFA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Data", "Mqtt.Data\Mqtt.Data.csproj", "{EB829810-EED3-4D5C-B52B-FF1F55105A15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Application", "Mqtt.Application\Mqtt.Application.csproj", "{772EB034-BBE9-4833-B4C6-F07916B87CBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Domain", "Mqtt.Domain\Mqtt.Domain.csproj", "{18C4CEC7-B92F-4289-ACF3-6A3A4CB84F06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTnet.AspNetCore", "MQTTnet.AspnetCore\MQTTnet.AspNetCore.csproj", "{EF26B482-F12E-41F0-8A0E-C01D94B1F254}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.WebApi", "Mqtt.WebApi\Mqtt.WebApi.csproj", "{D78D9533-38BE-4B2E-AAEF-7A668C33F356}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{775567E3-BB3A-45E0-8734-C85A73E97F2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{775567E3-BB3A-45E0-8734-C85A73E97F2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{775567E3-BB3A-45E0-8734-C85A73E97F2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{775567E3-BB3A-45E0-8734-C85A73E97F2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F732426-DEF4-48ED-A1A8-C77B65399466}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F732426-DEF4-48ED-A1A8-C77B65399466}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F732426-DEF4-48ED-A1A8-C77B65399466}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F732426-DEF4-48ED-A1A8-C77B65399466}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D754FF70-68E9-4C12-AF59-133C3462EFA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D754FF70-68E9-4C12-AF59-133C3462EFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D754FF70-68E9-4C12-AF59-133C3462EFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D754FF70-68E9-4C12-AF59-133C3462EFA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB829810-EED3-4D5C-B52B-FF1F55105A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB829810-EED3-4D5C-B52B-FF1F55105A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB829810-EED3-4D5C-B52B-FF1F55105A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB829810-EED3-4D5C-B52B-FF1F55105A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{772EB034-BBE9-4833-B4C6-F07916B87CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{772EB034-BBE9-4833-B4C6-F07916B87CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{772EB034-BBE9-4833-B4C6-F07916B87CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{772EB034-BBE9-4833-B4C6-F07916B87CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18C4CEC7-B92F-4289-ACF3-6A3A4CB84F06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18C4CEC7-B92F-4289-ACF3-6A3A4CB84F06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18C4CEC7-B92F-4289-ACF3-6A3A4CB84F06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18C4CEC7-B92F-4289-ACF3-6A3A4CB84F06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF26B482-F12E-41F0-8A0E-C01D94B1F254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF26B482-F12E-41F0-8A0E-C01D94B1F254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF26B482-F12E-41F0-8A0E-C01D94B1F254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF26B482-F12E-41F0-8A0E-C01D94B1F254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D78D9533-38BE-4B2E-AAEF-7A668C33F356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D78D9533-38BE-4B2E-AAEF-7A668C33F356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D78D9533-38BE-4B2E-AAEF-7A668C33F356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D78D9533-38BE-4B2E-AAEF-7A668C33F356}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
