@@ -132,7 +132,7 @@
         <e p="Mqtt.WebApi.csproj" t="IncludeRecursive" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
-            <e p="net5.0" t="Include">
+            <e p="netcoreapp3.1" t="Include">
               <e p="Mqtt.WebApi.AssemblyInfo.cs" t="Include" />
             </e>
           </e>

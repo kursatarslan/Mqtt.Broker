@@ -1,5 +1,5 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
-EXPOSE 8883 1883 8080
+EXPOSE 8883 1883
 
 # 1883  MQTT
 # 8883  MQTT/SSL

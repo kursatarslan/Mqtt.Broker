@@ -1,0 +1,45 @@
+version: "3.7"
+
+networks:
+  mqtt-net:
+    name: mqtt-net
+    driver: bridge
+
+services:
+  postgresql:
+    restart: always
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mqtt
+      - DEBUG=false
+      - PG_TRUST_LOCALNET=true
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -d pars_dev -U postgres  && psql -d postgres -U postgres -c "SELECT 1=1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mqtt-net
+  mqttbroker:
+    image: kursatarslan/mqttbroker:latest
+    ports:
+      - 1883:1883
+    container_name: mqttbroker
+    environment:
+      - ConnectionStrings__postgres=Host=host.docker.internal;Port=5432;Username=postgres;Password=postgres;Database=mqtt;
+    networks:
+      - mqtt-net
+    hostname: mqttbroker
+    restart: always
+    depends_on:
+      - postgresql
+volumes:
+  pg_data:
+    name: pg_data
+    driver: local

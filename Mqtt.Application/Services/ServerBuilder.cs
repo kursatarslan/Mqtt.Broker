@@ -50,9 +50,9 @@ namespace Mqtt.Application.Services
                 .WithStorage(_storage)
                 .WithPersistentSessions()
                 .WithConnectionBacklog(15)
-                .WithEncryptionSslProtocol(SslProtocols.Tls)
-                .WithEncryptedEndpoint()
-                .WithEncryptedEndpointPort(sslport)
+                //.WithEncryptionSslProtocol(SslProtocols.Tls)
+                //.WithEncryptedEndpoint()
+                //.WithEncryptedEndpointPort(sslport)
                 .WithConnectionValidator(_validator)
                 .WithSubscriptionInterceptor(interceptor)
                 .WithApplicationMessageInterceptor(messageInterceptor);

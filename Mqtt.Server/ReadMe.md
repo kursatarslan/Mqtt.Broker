@@ -1,4 +1,11 @@
-# 
+#deploy
+docker build -t mqttbroker .
+docker tag mqttbroker kursatarslan/mqttbroker
+docker build -t kursatarslan/mqttbroker .
+ docker push kursatarslan/mqttbroker  
+
+
+# Local
 docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=postgres -d postgres
 
 
