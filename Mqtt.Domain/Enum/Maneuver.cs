@@ -5,7 +5,7 @@ namespace Mqtt.Domain.Enums
         Unavailable = 0,
         JoinRequest,
         JoinAccepted,
-        JoinRehected,
+        JoinRejected,
         SplitRequest,
         MergeRequest,
         ManueverCompleted,

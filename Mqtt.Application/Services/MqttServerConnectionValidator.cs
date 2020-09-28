@@ -49,27 +49,32 @@ namespace Mqtt.Application.Services
 
             context.ReasonCode = MqttConnectReasonCode.Success;
             //_repo.
-            await LogMessage(context);
+            await LogMessage(context,true);
             return;
         }
-        
-        private async Task LogMessage(MqttConnectionValidatorContext context, bool showPassword = false)
+
+        private async Task LogMessage(MqttConnectionValidatorContext context, bool newConnection = false,
+            bool showPassword = false)
         {
             if (context == null)
             {
                 return;
             }
 
-            var connection = new Connection {
-                ClientId = context.ClientId,
-                CleanSession = context.CleanSession,
-                Endpoint = context.Endpoint,
-                Password = context.Password,
-                Username = context.Username
+            if (newConnection) 
+            {
+                var connection = new Connection
+                {
+                    ClientId = context.ClientId,
+                    CleanSession = context.CleanSession,
+                    Endpoint = context.Endpoint,
+                    Password = context.Password,
+                    Username = context.Username
 
-            };
-            _repo.AddConnection(connection);
-            await _repo.SaveChangesAsync();
+                };
+                _repo.AddConnection(connection);
+                await _repo.SaveChangesAsync();
+            }
 
             if (showPassword)
             {

@@ -172,7 +172,7 @@ namespace Mqtt.Application.Services.Hosted
                         return;
                     }
                     
-                    if (tree.First().Contains("platoon"))
+                    if (!tree.First().Contains("platooning"))
                     {
                         var log = new Log
                         {
@@ -184,23 +184,51 @@ namespace Mqtt.Application.Services.Hosted
                         return;
                     }
 
+                    if (payload.PlatoonDissolveStatus)
+                    {
+                        Console.WriteLine($"[{DateTime.Now}] PlatoonDissolveStatus is true all platoon infor must be deleted" +
+                                          " Client Id " + e.ClientId + " payload " +
+                                          audit.Payload);
+
+                        var platoon = _repo.GetPlatoon();
+                        var enumerable = platoon as Platoon[] ?? platoon.ToArray();
+                        _repo.DeletePlatoonRange(enumerable.ToArray());
+                    }
 
                     if (payload.Maneuver == Maneuver.CreatePlatoon)
                     {
-                        var vehPla = e.ApplicationMessage.Topic.Replace("platooning/message/", "");
-                        var platoonId = vehPla.Split("/").Last();
+                        if ( tree.Length != 4)
+                        {
+                            var log = new Log
+                            {
+                                Exception = new string("For creating platoon, topic must 4 length 1. \"platooning\" " + 
+                                                       " 2.  \"message\" " + 
+                                                       " 3.  \"leadvehicleID\" " + 
+                                                       " 4.  \"platoonID\" " + 
+
+                                                       " payload " + JsonConvert.SerializeObject(payload, Formatting.Indented) + " " +
+                                                       " client ID " + e.ClientId + 
+                                                       " topic " + e.ApplicationMessage.Topic)
+                            };
+                            _repo.AddLogAsync(log);
+                            return;
+                        }
+                        //var vehPla = e.ApplicationMessage.Topic.Replace("platooning/message/", "");
+                        var platoonId = tree[3];
                         var platoonList = _repo.GetPlatoon().ToList();
+                        var leadVehicleId = tree[2];
+                        var leadVehicle = _repo.GetSubscribeById(leadVehicleId);
                         var pla = platoonList
                             .FirstOrDefault(f => f.Enable && f.PlatoonRealId == platoonId);
-                        if (pla == null)
+                        if (leadVehicle != null &&  pla == null)
                         {
                             var platoon = new Platoon()
                             {
                                 Enable = true,
                                 ClientId = e.ClientId,
                                 IsLead = true,
-                                VechicleId = vehPla.Split("/").First(),
-                                PlatoonRealId = vehPla.Split("/").Last()
+                                VechicleId = tree[2],
+                                PlatoonRealId = tree[3]
                             };
                             _repo.AddPlatoon(platoon);
                             Console.WriteLine($"[{DateTime.Now}] Creating new Platoon Client Id " + e.ClientId +
@@ -214,8 +242,22 @@ namespace Mqtt.Application.Services.Hosted
                     }
                     else if (payload.Maneuver == Maneuver.JoinRequest)
                     {
-                        var followingVec = e.ApplicationMessage.Topic.Replace("platooning/message/", "");
-                        var isFollowing =_repo.GetPlatoon().FirstOrDefault(f => f.IsFollower && f.VechicleId == followingVec && f.Enable);
+                        if ( tree.Length != 3)
+                        {
+                            var log = new Log
+                            {
+                                Exception = new string("For joining platoon, topic must 3 length 1. \"platooning\" " + 
+                                                       " 2.  \"message\" " + 
+                                                       " 3.  \"followingVehicleId\" " +
+                                                       " 4.  \"#\" " + 
+                                                       " payload " + JsonConvert.SerializeObject(payload, Formatting.Indented) + " " +
+                                                       " client ID " + e.ClientId + 
+                                                       " topic " + e.ApplicationMessage.Topic)
+                            };
+                            _repo.AddLogAsync(log);
+                            return;
+                        }
+                        var isFollowing =_repo.GetPlatoon().FirstOrDefault(f => f.IsFollower && f.VechicleId == tree[2] && f.Enable);
                         if (isFollowing != null) return;
                         var platoonLead = _repo.GetPlatoon().FirstOrDefault(f => f.IsLead && f.Enable);
                         if (platoonLead != null)
@@ -226,7 +268,7 @@ namespace Mqtt.Application.Services.Hosted
                                 ClientId = e.ClientId,
                                 IsLead = false,
                                 IsFollower = true,
-                                VechicleId = followingVec,
+                                VechicleId = tree[2],
                                 PlatoonRealId = platoonLead.PlatoonRealId
                             };
                             _repo.AddPlatoon(platoon);
@@ -237,7 +279,7 @@ namespace Mqtt.Application.Services.Hosted
                             message.Set(1, false);
                             message.Set(2, true);
 
-                            Server.PublishAsync("platooning/" + platoonLead.ClientId + "/" + followingVec,
+                            Server.PublishAsync("platooning/" + platoonLead.ClientId + "/" + isFollowing.VechicleId,
                                 Encoding.ASCII.GetString(Functions.BitArrayToByteArray(message)));
                         }
                     }
@@ -245,10 +287,10 @@ namespace Mqtt.Application.Services.Hosted
                     {
                         Console.WriteLine($"[{DateTime.Now}] Join accepted Client Id " + e.ClientId + " payload " +
                                           audit.Payload);
-                        var splitTopic = e.ApplicationMessage.Topic.Split("/");
-                        var followvehicleId = splitTopic[1];
-                        var leadVehicle = splitTopic[2];
-                        var plattonId = splitTopic[3];
+                        //var splitTopic = e.ApplicationMessage.Topic.Split("/");
+                        var followvehicleId = tree[1];
+                        var leadVehicle = tree[2];
+                        var plattonId = tree[3];
                         var platoonfollow = _repo.GetPlatoon()
                             .FirstOrDefault(f => f.IsFollower && f.ClientId == followvehicleId);
 
@@ -275,6 +317,18 @@ namespace Mqtt.Application.Services.Hosted
                                 };
                                 _repo.AddPlatoon(platoon);
                             }
+                        }
+                    }else if (payload.Maneuver == Maneuver.JoinRejected)
+                    {
+                        Console.WriteLine($"[{DateTime.Now}] Join rejected Client Id " + e.ClientId + " payload " +
+                                          audit.Payload);
+                        var followvehicleId = tree[1];
+                        var platoonfollow = _repo.GetPlatoon()
+                            .FirstOrDefault(f => f.IsFollower && f.ClientId == followvehicleId);
+
+                        if (platoonfollow != null)
+                        {
+                            _repo.DeletePlatoon(platoonfollow);
                         }
                     }
                     else

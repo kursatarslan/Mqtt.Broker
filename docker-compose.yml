@@ -18,7 +18,7 @@ services:
       - DEBUG=false
       - PG_TRUST_LOCALNET=true
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pgmqtt_data:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready -d pars_dev -U postgres  && psql -d postgres -U postgres -c "SELECT 1=1"
       interval: 10s
@@ -40,6 +40,6 @@ services:
     depends_on:
       - postgresql
 volumes:
-  pg_data:
-    name: pg_data
+  pgmqtt_data:
+    name: pgmqtt_data
     driver: local

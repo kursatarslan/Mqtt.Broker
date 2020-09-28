@@ -13,7 +13,6 @@ namespace Mqtt.Application.Services
     public class ServerBuilder : IServerBuilder
     {
         private readonly IConfiguration _configuration;
-        private readonly IMqttRepository _repo;
         private readonly IMqttServerStorage _storage;
         private readonly IMqttServerFactory _factory;
         private readonly IMqttServerConnectionValidator _validator;
@@ -28,7 +27,6 @@ namespace Mqtt.Application.Services
             ILogger<ServerBuilder> logger)
         {
             _configuration = configuration;
-            _repo = repo;
             _storage = storage;
             _factory = factory;
             _validator = validator;
@@ -40,9 +38,9 @@ namespace Mqtt.Application.Services
             IMqttServerApplicationMessageInterceptor messageInterceptor)
         {
             if (!int.TryParse(_configuration["Settings:Port"], out var port))
-                port = 1833;
+                port = 1883;
             if (!int.TryParse(_configuration["Settings:SslPort"], out var sslport))
-                sslport = 1833;
+                sslport = 8883;
 
             var optionsBuilder = new MqttServerOptionsBuilder()
                 .WithDefaultEndpoint()

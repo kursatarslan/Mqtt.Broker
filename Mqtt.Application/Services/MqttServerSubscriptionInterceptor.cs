@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using Mqtt.Data.Contracts;
+using Mqtt.Domain.Models;
 using MQTTnet.Server;
 
 namespace Mqtt.Application.Services
@@ -28,13 +31,22 @@ namespace Mqtt.Application.Services
 
             if (context.TopicFilter.Topic.StartsWith("platooning/broadcast/"))
             {
-                var plotooningId = context.TopicFilter.Topic.Replace("platooning/broadcast/", "");
+                var tree = context.TopicFilter.Topic.Split('/');
+                //var plotooningId = context.TopicFilter.Topic.Replace("platooning/broadcast/", "");
+                var platoon = tree.Length > 2 ? _repo.GetPlatoonById(tree[2]) : null;
+                if (platoon == null)
+                {
+                    context.AcceptSubscription = false;
+                    context.CloseConnection = true;
+                    _logger.LogInformation(
+                        $"Reject for not found platoonId on our system | ClientId = {context.ClientId}, TopicFilter = {context.TopicFilter},"
+                        + $" AcceptSubscription = {context.AcceptSubscription}, SessionItems = {context.SessionItems}");
+
+                }
 
                 try
                 {
-                    var followvehicle = _repo.GetPlatoon(context.ClientId); 
-
-                    if (followvehicle == null)
+                    if (_repo.GetPlatoon(context.ClientId) == null)
                     {
                         context.AcceptSubscription = false;
                         context.CloseConnection = true;
@@ -49,7 +61,14 @@ namespace Mqtt.Application.Services
                 {
                     context.AcceptSubscription = false;
                     context.CloseConnection = true;
-                    _logger.LogError($"Close connection for subcriptions Exception MqttSubscriptionInterceptorContext = {exception.StackTrace}");
+                    _repo.AddLogAsync(new Log()
+                    {
+                        Exception =
+                            $"Close connection for subscriptions Exception MqttSubscriptionInterceptorContext = {exception.StackTrace}",
+
+                            CreationDate = DateTime.Now
+                    });
+                    _logger.LogError($"Close connection for subscriptions Exception MqttSubscriptionInterceptorContext = {exception.StackTrace}");
                 }
             }
                 
@@ -62,7 +81,5 @@ namespace Mqtt.Application.Services
 
             return Task.CompletedTask;
         }
-
-
     }
 }

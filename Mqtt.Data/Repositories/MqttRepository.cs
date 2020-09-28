@@ -30,6 +30,15 @@ namespace Mqtt.Data.Repositories
         {
             _context.Entry(platoon).State = EntityState.Modified;
         }
+        public void DeletePlatoon(Platoon platoon)
+        {
+            _context.Set<Platoon>().Remove(platoon);
+        }
+        
+        public void DeletePlatoonRange(Platoon[] platoons)
+        {
+            _context.Set<Platoon>().RemoveRange(platoons);
+        }
 
         public MqttUser AddUser(string username, string password)
         {
@@ -86,12 +95,19 @@ namespace Mqtt.Data.Repositories
         public Subscribe GetSubscribeByTopic(string clientId, string topic, string qos) {
             return _context.Subscribe.FirstOrDefault(f => f.ClientId == clientId && f.Topic ==topic && f.QoS == qos );
         }
+        public IEnumerable<Subscribe> GetSubscribe() {
+            return _context.Subscribe.ToList();
+        }
+        public IEnumerable<Connection> GetConnection() {
+            return _context.Connection.ToList();
+        }
+        
         public IEnumerable<Subscribe> GetSubscribeById(string clientId) {
             return _context.Subscribe.Where(f => f.ClientId == clientId ).ToList();
         }
-        public Platoon GetPlatoonById(int id)
+        public Platoon GetPlatoonById(string id)
         {
-            return _context.Platoon.FirstOrDefault(f => f.Id == id && f.Enable);
+            return _context.Platoon.FirstOrDefault(f => f.PlatoonRealId == id && f.Enable);
         }
 
         public Platoon GetPlatoon(string vehicleId)

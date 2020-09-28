@@ -16,14 +16,18 @@ namespace Mqtt.Data.Contracts
         Task<bool> AddLogAsync(Log log);
         int AddAudit(Audit audit);
         void UpdatePlatoon(Platoon platoon);
+        void DeletePlatoon(Platoon platoon);
+        void DeletePlatoonRange(Platoon[] platoons);
         int AddPlatoon(Platoon platoon);
         int AddSubscribe(Subscribe sub);
         Connection AddConnection(Connection con);
         IEnumerable<MqttMessage> GetMessages();
+        IEnumerable<Connection> GetConnection();
         IEnumerable<Platoon> GetPlatoon();
-        Platoon GetPlatoonById(int id);
+        Platoon GetPlatoonById(string id);
         Subscribe GetSubscribeByTopic(string clientId, string topic, string qos);
         IEnumerable<Subscribe> GetSubscribeById(string clientId);
+        IEnumerable<Subscribe> GetSubscribe();
         Platoon GetPlatoon(string vehicleId);
     }
 }

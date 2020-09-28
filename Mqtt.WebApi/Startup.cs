@@ -6,10 +6,19 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Mqtt.Application.Contracts;
+using Mqtt.Application.Services;
+using Mqtt.Application.Services.Hosted;
+using Mqtt.Context;
+using Mqtt.Data.Contracts;
+using Mqtt.Data.Repositories;
+using MQTTnet;
+using MQTTnet.Server;
 
 namespace Mqtt.WebApi
 {
@@ -25,7 +34,40 @@ namespace Mqtt.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddControllersAsServices();;
+            
+            services.AddSingleton<IMqttServerOptions, MqttServerOptions>();
+            services.AddSingleton<IMqttServerFactory, MqttFactory>();
+            services.AddSingleton<IMqttServerStorage, MqttStorage>();
+            services.AddSingleton<IMqttServerSubscriptionInterceptor, MqttServerSubscriptionInterceptor>();
+            services.AddSingleton<IMqttServerApplicationMessageInterceptor, MqttServerApplicationMessageInterceptor>();
+            services.AddSingleton<IMqttServerConnectionValidator, MqttServerConnectionValidator>();
+            services.AddSingleton<IServerBuilder, ServerBuilder>();
+            services.AddTransient<IMqttRepository, MqttRepository>();
+            ISecretProvider sp = new SecretProvider();
+            services.AddSingleton(sp);
+            var stage = Environment.GetEnvironmentVariable("STAGE") ?? "Development";
+            var connectionString = string.Empty;
+            if (stage == "Development")
+            {
+                connectionString = Configuration.GetConnectionString("postgres");
+            }
+            else
+            {
+                var db = sp.GetSecret("database");
+                var host = sp.GetSecret("host");
+                var username = sp.GetSecret("username");
+                var port = sp.GetSecret("port");
+                var pw = sp.GetSecret("postgres_db_password");
+                connectionString = $"Host={host};Port={port};Username={username};Password={pw};Database={db};";
+            }
+
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Mqtt.Context"));
+            },ServiceLifetime.Transient);
+            
+            services.AddHostedService<MqttService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

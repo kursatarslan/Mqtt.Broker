@@ -26,7 +26,7 @@ namespace Mqtt.Application.Services
 
         public async Task InterceptApplicationMessagePublishAsync(MqttApplicationMessageInterceptorContext context)
         {
-            context.AcceptPublish = true;
+            //context.AcceptPublish = true;
             if (context.ApplicationMessage == null)
                 return;
 
