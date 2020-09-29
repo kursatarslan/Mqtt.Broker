@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Mqtt.Context;
 using Mqtt.Data.Contracts;
@@ -22,21 +23,25 @@ namespace Mqtt.Application.Services
         
         public  Task SaveRetainedMessagesAsync(
             IList<MqttApplicationMessage> messages)
-        {
-            var context = _serviceProvider.GetRequiredService<DataContext>();
-            foreach (var message in messages)
+        {/*
+            using (var newcontext = new DataContext(new DbContextOptions<DataContext>()))
             {
-                var payload = message?.Payload == null ? null : BitConverter.ToString((message?.Payload));
-                var msg = context.MqttMessages.Add(new MqttMessage
+                foreach (var message in messages)
                 {
-                    Created = DateTime.Now,
-                    Message = payload,
-                    Topic = message?.Topic,
-                    ContentType = message?.ContentType
-                });
-            }
+                    var payload = message?.Payload == null ? null : BitConverter.ToString((message?.Payload));
+                    var msg = newcontext.MqttMessages.Add(new MqttMessage
+                    {
+                        Created = DateTime.Now,
+                        Message = payload,
+                        Topic = message?.Topic,
+                        ContentType = message?.ContentType
+                    });
+                }
+                //newcontext.SaveChanges();
+            }*/
 
-            context.SaveChanges();
+
+           
             messages.Clear();
             return Task.CompletedTask;
         }
@@ -44,7 +49,7 @@ namespace Mqtt.Application.Services
         public Task<IList<MqttApplicationMessage>> LoadRetainedMessagesAsync()
         {
             var context = _serviceProvider.GetRequiredService<DataContext>();
-
+            
             var messages = context.MqttMessages;
             IList<MqttApplicationMessage> lst = messages.Select(m => new MqttApplicationMessage
             {

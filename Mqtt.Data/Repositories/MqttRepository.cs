@@ -100,7 +100,7 @@ namespace Mqtt.Data.Repositories
             return _context.Connection.ToList();
         }
         
-        public IEnumerable<Subscribe> GetSubscribeById(string clientId) {
+        public List<Subscribe> GetSubscribeById(string clientId) {
             return _context.Subscribe.Where(f => f.ClientId == clientId ).ToList();
         }
         public Platoon GetPlatoonById(string id)

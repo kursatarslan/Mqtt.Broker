@@ -2,7 +2,7 @@
 docker build -t mqttbroker .
 docker tag mqttbroker kursatarslan/mqttbroker
 docker build -t kursatarslan/mqttbroker .
- docker push kursatarslan/mqttbroker  
+docker push kursatarslan/mqttbroker  
  
 #Create a self-signed certificate
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365

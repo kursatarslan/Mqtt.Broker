@@ -77,7 +77,10 @@ namespace Mqtt.LeadClient
         public static string ToBitString(BitArray bits, int indexStart, int indexFinish)
         {
             var sb = new StringBuilder();
-
+            if ((indexStart < 0) || (indexFinish >= bits.Length))
+            {
+                return null;
+            }
             for (var i = indexStart; i < indexFinish; i++)
             {
                 var c = bits[i] ? '1' : '0';

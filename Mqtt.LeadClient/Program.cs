@@ -40,7 +40,7 @@ namespace Mqtt.LeadClient
                         //string message = HelperFunctions.RandomString(5,true);
                         _ = PublishAsync("platooning/message/" + leadvehicle + "/" + platoonId,
                             Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
-                        Console.WriteLine("Client Publish as  " + "platooning/message/" + leadvehicle + "  payload => " +
+                        Console.WriteLine("Client Publish as  " + "platooning/message/" + leadvehicle + "/" + platoonId + "  payload => " +
                                           Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
                     }
                     else if (Console.ReadKey(true).Key == ConsoleKey.K)
@@ -137,9 +137,12 @@ namespace Mqtt.LeadClient
                                 message.Set(0, false);
                                 message.Set(1, true);
                                 message.Set(2, false);
+                                var pubtopic = "platooning/" + followingVehicle[2] + "/" + leadvehicle + "/" +
+                                               platoonId;
                                 _ = PublishAsync(
-                                    "platooning/" + followingVehicle[2] + "/" + leadvehicle + "/" + platoonId,
+                                    pubtopic,
                                     Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
+                                Console.WriteLine($"Publish Topic: {pubtopic}. Message Received: {Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message))}");
                             }
                         }else if (key == ConsoleKey.R)
                         {

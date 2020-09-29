@@ -26,7 +26,7 @@ namespace Mqtt.Data.Contracts
         IEnumerable<Platoon> GetPlatoon();
         Platoon GetPlatoonById(string id);
         Subscribe GetSubscribeByTopic(string clientId, string topic, string qos);
-        IEnumerable<Subscribe> GetSubscribeById(string clientId);
+        List<Subscribe> GetSubscribeById(string clientId);
         IEnumerable<Subscribe> GetSubscribe();
         Platoon GetPlatoon(string vehicleId);
     }

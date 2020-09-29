@@ -310,33 +310,37 @@ namespace Mqtt.Application.Services.Hosted
                         var followvehicleId = tree[1];
                         var leadVehicle = tree[2];
                         var plattonId = tree[3];
-                        var platoonfollow = _repo.GetPlatoon()
-                            .FirstOrDefault(f => f.IsFollower && f.ClientId == followvehicleId);
+                        var allplatoon = _repo.GetPlatoon();
 
-                        if (platoonfollow != null)
+                        if (allplatoon != null)
                         {
-                            platoonfollow.Enable = true;
-                            platoonfollow.PlatoonRealId = plattonId;
-                            _repo.UpdatePlatoon(platoonfollow);
-                        }
-                        else
-                        {
-                            var platoonlead = _repo.GetPlatoon()
-                                .FirstOrDefault(f => f.IsLead && f.Enable && f.ClientId == leadVehicle);
-                            if (platoonlead != null)
+                            var enumerable = allplatoon as Platoon[] ?? allplatoon.ToArray();
+                            var  platoonfollow = enumerable.FirstOrDefault(f => f.IsFollower && f.ClientId == followvehicleId);
+                            if (platoonfollow != null)
                             {
-                                var platoon = new Platoon()
+                                platoonfollow.Enable = true;
+                                platoonfollow.PlatoonRealId = plattonId;
+                                _repo.UpdatePlatoon(platoonfollow);
+                            }else
+                            {
+                                var platoonlead = enumerable
+                                    .FirstOrDefault(f => f.IsLead && f.Enable && f.ClientId == leadVehicle);
+                                if (platoonlead != null)
                                 {
-                                    Enable = true,
-                                    ClientId = e.ClientId,
-                                    IsLead = false,
-                                    IsFollower = true,
-                                    VechicleId = followvehicleId,
-                                    PlatoonRealId = platoonlead.PlatoonRealId
-                                };
-                                _repo.AddPlatoon(platoon);
+                                    var platoon = new Platoon()
+                                    {
+                                        Enable = true,
+                                        ClientId = e.ClientId,
+                                        IsLead = false,
+                                        IsFollower = true,
+                                        VechicleId = followvehicleId,
+                                        PlatoonRealId = platoonlead.PlatoonRealId
+                                    };
+                                    _repo.AddPlatoon(platoon);
+                                }
                             }
                         }
+                        
                     }
                     else if (payload.Maneuver == Maneuver.JoinRejected)
                     {
