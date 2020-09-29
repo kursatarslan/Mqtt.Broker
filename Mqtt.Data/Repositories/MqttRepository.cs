@@ -67,16 +67,14 @@ namespace Mqtt.Data.Repositories
         {
             return _context.MqttMessages.Add(message).Entity.Id;
         }
-
         public int AddAudit(Audit audit)
         {
             return _context.Audit.Add(audit).Entity.Id;
         }
 
-        public async Task<bool> AddLogAsync(Log log)
+        public int AddLogAsync(Log log)
         {
-             _context.Log.Add(log);
-             return await SaveChangesAsync();
+            return _context.Log.Add(log).Entity.Id;
         }
 
         public int AddSubscribe(Subscribe subscribe)

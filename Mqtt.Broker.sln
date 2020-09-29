@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Client", "Mqtt.Client\Mqtt.Client.csproj", "{775567E3-BB3A-45E0-8734-C85A73E97F2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.LeadClient", "Mqtt.LeadClient\Mqtt.LeadClient.csproj", "{775567E3-BB3A-45E0-8734-C85A73E97F2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.Server", "Mqtt.Server\Mqtt.Server.csproj", "{9F732426-DEF4-48ED-A1A8-C77B65399466}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTTnet.AspNetCore", "MQTTnet.AspnetCore\MQTTnet.AspNetCore.csproj", "{EF26B482-F12E-41F0-8A0E-C01D94B1F254}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.WebApi", "Mqtt.WebApi\Mqtt.WebApi.csproj", "{D78D9533-38BE-4B2E-AAEF-7A668C33F356}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mqtt.FollowerClient", "Mqtt.FollowerClient\Mqtt.FollowerClient.csproj", "{12EDAD93-13A0-4883-86B9-CF95B6E498CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,5 +56,9 @@ Global
 		{D78D9533-38BE-4B2E-AAEF-7A668C33F356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D78D9533-38BE-4B2E-AAEF-7A668C33F356}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D78D9533-38BE-4B2E-AAEF-7A668C33F356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12EDAD93-13A0-4883-86B9-CF95B6E498CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12EDAD93-13A0-4883-86B9-CF95B6E498CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12EDAD93-13A0-4883-86B9-CF95B6E498CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12EDAD93-13A0-4883-86B9-CF95B6E498CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

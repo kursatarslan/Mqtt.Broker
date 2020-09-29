@@ -1,0 +1,42 @@
+additional_properties: {}
+apiVersion: '2018-10-01'
+identity: null
+location: westeurope
+name: mqttcontainer
+properties:
+  containers:
+  - name: mqttcontainer
+    properties:
+      environmentVariables:
+      - name: ConnectionStrings__postgres
+        value: Host=arslan.postgres.database.azure.com;Port=5432;Username=kursat@arslan;Password=*****;Database=mqtt;Maximum Pool Size=500;Connection Idle Lifetime=120;Connection Pruning Interval=10;Timeout=10;Command Timeout=10;
+      - name: Settings__Host
+        value: mqttbroker.azurewebsites.net
+      image: kursatarslan/mqttbroker
+      ports:
+      - port: 80
+        protocol: TCP
+      - port: 1883
+        protocol: TCP
+      - port: 8883
+        protocol: TCP
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 1.5
+  ipAddress:
+    dnsNameLabel: mqttbroker
+    fqdn: mqttbroker.westeurope.azurecontainer.io
+    ip: 20.61.8.163
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 1883
+      protocol: TCP
+    - port: 8883
+      protocol: TCP
+    type: Public
+  osType: Linux
+  restartPolicy: OnFailure
+tags: {}
+type: Microsoft.ContainerInstance/containerGroups

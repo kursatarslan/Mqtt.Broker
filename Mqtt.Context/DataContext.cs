@@ -26,18 +26,12 @@ namespace Mqtt.Context
 
             modelBuilder.Entity<MqttUser>().HasKey(user => user.Username);
             modelBuilder.Entity<MqttMessage>().HasIndex(m => m.Created);
-
+            modelBuilder.Entity<Audit>();
             modelBuilder.Entity<Log>();
             modelBuilder.Entity<Payload>();
             modelBuilder.Entity<Connection>();
             modelBuilder.Entity<Platoon>();
             modelBuilder.Entity<Subscribe>();
-            modelBuilder.Entity<Audit>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.ClientId).HasColumnName("ClientId");
-                entity.Property(e => e.Topic).HasColumnName("Topic");
-            });
         }
     }
 }

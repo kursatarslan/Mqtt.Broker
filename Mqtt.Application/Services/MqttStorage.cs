@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Mqtt.Context;
 using Mqtt.Data.Contracts;
 using Mqtt.Domain.Models;
 using MQTTnet;
@@ -12,36 +14,38 @@ namespace Mqtt.Application.Services
 {
     public class MqttStorage : IMqttServerStorage
     {
-        private readonly IMqttRepository _repo;
-
-        public MqttStorage(IMqttRepository repo)
+        private readonly IServiceProvider _serviceProvider;
+        public MqttStorage(IServiceProvider serviceProvider)
         {
-            _repo = repo;
+            _serviceProvider = serviceProvider;
         }
         
         public  Task SaveRetainedMessagesAsync(
             IList<MqttApplicationMessage> messages)
         {
-             foreach (var message in messages)
-             {
-                 var payload = message?.Payload == null ? null : BitConverter.ToString((message?.Payload));
-                 var msg = _repo.AddMessage(new MqttMessage
-                 {
-                     Created = DateTime.Now,
-                     Message = payload,
-                     Topic = message?.Topic,
-                     ContentType = message?.ContentType
-                 });
-             }
-            
-             _repo.SaveChanges();
-             messages.Clear();
+            var context = _serviceProvider.GetRequiredService<DataContext>();
+            foreach (var message in messages)
+            {
+                var payload = message?.Payload == null ? null : BitConverter.ToString((message?.Payload));
+                var msg = context.MqttMessages.Add(new MqttMessage
+                {
+                    Created = DateTime.Now,
+                    Message = payload,
+                    Topic = message?.Topic,
+                    ContentType = message?.ContentType
+                });
+            }
+
+            context.SaveChanges();
+            messages.Clear();
             return Task.CompletedTask;
         }
 
         public Task<IList<MqttApplicationMessage>> LoadRetainedMessagesAsync()
         {
-            var messages = _repo.GetMessages();
+            var context = _serviceProvider.GetRequiredService<DataContext>();
+
+            var messages = context.MqttMessages;
             IList<MqttApplicationMessage> lst = messages.Select(m => new MqttApplicationMessage
             {
                 Payload = Encoding.UTF8.GetBytes(m.Message),

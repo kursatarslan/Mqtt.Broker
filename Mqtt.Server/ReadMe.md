@@ -20,6 +20,13 @@ dotnet ef database update
 # migration
 dotnet ef migrations add InitialCreate --startup-project ../Mqtt.Server/Mqtt.Server.csproj 
 
+# Azure
+az container export -g mqttbroker --name mqttcontainer -f azcontainer.yaml
+az container delete --name MyContainerGroup --resource-group mqttbroker
+az container create -g mqttbroker -f containerGroup.yaml
+
+
+
 
 
 

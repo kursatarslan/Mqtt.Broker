@@ -12,7 +12,6 @@ WORKDIR /src
 
 COPY ["Mqtt.Data/Mqtt.Data.csproj", "Mqtt.Data/"]
 COPY ["Mqtt.Context/Mqtt.Context.csproj", "Mqtt.Context/"]
-COPY ["Mqtt.Client/Mqtt.Client.csproj", "Mqtt.Client/"]
 COPY ["Mqtt.Domain/Mqtt.Domain.csproj", "Mqtt.Domain/"]
 COPY ["Mqtt.Application/Mqtt.Application.csproj", "Mqtt.Application/"]
 COPY ["Mqtt.WebApi/Mqtt.WebApi.csproj", "Mqtt.WebApi/"]

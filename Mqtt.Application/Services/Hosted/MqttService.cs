@@ -86,12 +86,15 @@ namespace Mqtt.Application.Services.Hosted
                         Payload = JsonConvert.SerializeObject(e.TopicFilter, Formatting.Indented)
                     };
                     _repo.AddAudit(audit);
-                    var sub = _repo.GetSubscribeByTopic(e.ClientId,e.TopicFilter.Topic,e.TopicFilter.QualityOfServiceLevel.ToString());
-                    if (sub != null) {
+                    var sub = _repo.GetSubscribeByTopic(e.ClientId, e.TopicFilter.Topic,
+                        e.TopicFilter.QualityOfServiceLevel.ToString());
+                    if (sub != null)
+                    {
 
                         _logger.LogInformation($"There is a subcribe like ClientID {e.ClientId}.");
                         return;
                     }
+
                     var subClient = new Subscribe
                     {
                         Topic = e.TopicFilter.Topic,
@@ -100,7 +103,7 @@ namespace Mqtt.Application.Services.Hosted
                         QoS = e.TopicFilter.QualityOfServiceLevel.ToString()
                     };
                     _repo.AddSubscribe(subClient);
-                    _repo.SaveChangesAsync();
+                    
                 }
                 catch (Exception exception)
                 {
@@ -110,6 +113,10 @@ namespace Mqtt.Application.Services.Hosted
                     };
                     _repo.AddLogAsync(log);
                     _logger.LogError("Error = MqttServerClientSubscribedHandlerDelegate ", exception.StackTrace);
+                }
+                finally
+                {
+                    _repo.SaveChangesAsync(cancellationToken);
                 }
             });
 
@@ -125,8 +132,7 @@ namespace Mqtt.Application.Services.Hosted
                         var sub = _repo.GetSubscribeById(e.ClientId);
                         var subscribes = sub as List<Subscribe> ?? sub.ToList();
                         if (!subscribes.Any()) return;
-                        subscribes.ForEach(a=>a.Enable=false);
-                        _repo.SaveChanges();
+                        subscribes.ForEach(a => a.Enable = false);
                     }
                     catch (Exception exception)
                     {
@@ -144,6 +150,10 @@ namespace Mqtt.Application.Services.Hosted
                 {
                     Console.WriteLine($"[{DateTime.Now}] Client get error " + ex.Message);
                 }
+                finally
+                {
+                    _repo.SaveChangesAsync(cancellationToken);
+                }
             });
             
             Server.ApplicationMessageReceivedHandler = new MqttApplicationMessageReceivedHandlerDelegate(e =>
@@ -151,13 +161,14 @@ namespace Mqtt.Application.Services.Hosted
                 try
                 {
                     var payload = Functions.GetPayload(e.ApplicationMessage.Payload);
+                    var payloadser = JsonConvert.SerializeObject(payload, Formatting.Indented);
                     var tree = e.ApplicationMessage.Topic.Split('/');
                     var audit = new Audit
                     {
                         ClientId = e.ClientId,
                         Type = "Pub",
                         Topic = e.ApplicationMessage.Topic,
-                        Payload = JsonConvert.SerializeObject(payload, Formatting.Indented)
+                        Payload = payloadser
                     };
                     _repo.AddAudit(audit);
                     if (e.ClientId == null)
@@ -165,30 +176,33 @@ namespace Mqtt.Application.Services.Hosted
                         var log = new Log
                         {
                             Exception = new string("Broker publish message itself " +
-                                                   JsonConvert.SerializeObject(payload, Formatting.Indented) + " " +
+                                                   payloadser + " " +
                                                    e.ClientId)
                         };
                         _repo.AddLogAsync(log);
+                        //_repo.SaveChangesAsync(cancellationToken);
                         return;
                     }
-                    
+
                     if (!tree.First().Contains("platooning"))
                     {
                         var log = new Log
                         {
                             Exception = new string("Mqtt broker just only response with starting \"platoon\" " +
-                                                   JsonConvert.SerializeObject(payload, Formatting.Indented) + " " +
+                                                   payloadser + " " +
                                                    e.ClientId)
                         };
                         _repo.AddLogAsync(log);
+                        //_repo.SaveChangesAsync(cancellationToken);
                         return;
                     }
 
                     if (payload.PlatoonDissolveStatus)
                     {
-                        Console.WriteLine($"[{DateTime.Now}] PlatoonDissolveStatus is true all platoon infor must be deleted" +
-                                          " Client Id " + e.ClientId + " payload " +
-                                          audit.Payload);
+                        Console.WriteLine(
+                            $"[{DateTime.Now}] PlatoonDissolveStatus is true all platoon infor must be deleted" +
+                            " Client Id " + e.ClientId + " payload " +
+                            payload);
 
                         var platoon = _repo.GetPlatoon();
                         var enumerable = platoon as Platoon[] ?? platoon.ToArray();
@@ -197,30 +211,32 @@ namespace Mqtt.Application.Services.Hosted
 
                     if (payload.Maneuver == Maneuver.CreatePlatoon)
                     {
-                        if ( tree.Length != 4)
+                        if (tree.Length != 4)
                         {
                             var log = new Log
                             {
-                                Exception = new string("For creating platoon, topic must 4 length 1. \"platooning\" " + 
-                                                       " 2.  \"message\" " + 
-                                                       " 3.  \"leadvehicleID\" " + 
-                                                       " 4.  \"platoonID\" " + 
+                                Exception = new string("For creating platoon, topic must 4 length 1. \"platooning\" " +
+                                                       " 2.  \"message\" " +
+                                                       " 3.  \"leadvehicleID\" " +
+                                                       " 4.  \"platoonID\" " +
 
-                                                       " payload " + JsonConvert.SerializeObject(payload, Formatting.Indented) + " " +
-                                                       " client ID " + e.ClientId + 
+                                                       " payload " +
+                                                       payloadser + " " +
+                                                       " client ID " + e.ClientId +
                                                        " topic " + e.ApplicationMessage.Topic)
                             };
                             _repo.AddLogAsync(log);
+                            //_repo.SaveChangesAsync(cancellationToken);
                             return;
                         }
-                        //var vehPla = e.ApplicationMessage.Topic.Replace("platooning/message/", "");
+
                         var platoonId = tree[3];
                         var platoonList = _repo.GetPlatoon().ToList();
                         var leadVehicleId = tree[2];
                         var leadVehicle = _repo.GetSubscribeById(leadVehicleId);
                         var pla = platoonList
                             .FirstOrDefault(f => f.Enable && f.PlatoonRealId == platoonId);
-                        if (leadVehicle != null &&  pla == null)
+                        if (leadVehicle != null && pla == null)
                         {
                             var platoon = new Platoon()
                             {
@@ -232,32 +248,36 @@ namespace Mqtt.Application.Services.Hosted
                             };
                             _repo.AddPlatoon(platoon);
                             Console.WriteLine($"[{DateTime.Now}] Creating new Platoon Client Id " + e.ClientId +
-                                              " platooning Id" + platoon.PlatoonRealId + " payload "  + audit.Payload);
+                                              " platooning Id" + platoon.PlatoonRealId + " payload " + payloadser);
                         }
                         else
                         {
                             Console.WriteLine($"[{DateTime.Now}] Platoon is already created Client Id " + e.ClientId +
-                                              " platooning Id" + platoonId + " payload "  + audit.Payload);
+                                              " platooning Id" + platoonId + " payload " + payloadser);
                         }
                     }
                     else if (payload.Maneuver == Maneuver.JoinRequest)
                     {
-                        if ( tree.Length != 3)
+                        if (tree.Length != 3)
                         {
                             var log = new Log
                             {
-                                Exception = new string("For joining platoon, topic must 3 length 1. \"platooning\" " + 
-                                                       " 2.  \"message\" " + 
+                                Exception = new string("For joining platoon, topic must 3 length 1. \"platooning\" " +
+                                                       " 2.  \"message\" " +
                                                        " 3.  \"followingVehicleId\" " +
-                                                       " 4.  \"#\" " + 
-                                                       " payload " + JsonConvert.SerializeObject(payload, Formatting.Indented) + " " +
-                                                       " client ID " + e.ClientId + 
+                                                       " 4.  \"#\" " +
+                                                       " payload " +
+                                                       payloadser + " " +
+                                                       " client ID " + e.ClientId +
                                                        " topic " + e.ApplicationMessage.Topic)
                             };
                             _repo.AddLogAsync(log);
+                            //_repo.SaveChangesAsync();
                             return;
                         }
-                        var isFollowing =_repo.GetPlatoon().FirstOrDefault(f => f.IsFollower && f.VechicleId == tree[2] && f.Enable);
+
+                        var isFollowing = _repo.GetPlatoon()
+                            .FirstOrDefault(f => f.IsFollower && f.VechicleId == tree[2] && f.Enable);
                         if (isFollowing != null) return;
                         var platoonLead = _repo.GetPlatoon().FirstOrDefault(f => f.IsLead && f.Enable);
                         if (platoonLead != null)
@@ -273,21 +293,20 @@ namespace Mqtt.Application.Services.Hosted
                             };
                             _repo.AddPlatoon(platoon);
                             Console.WriteLine($"[{DateTime.Now}] Join Platoon Client Id " + e.ClientId +
-                                              " platooning Id" + platoon.PlatoonRealId + " payload "  + audit.Payload);
+                                              " platooning Id" + platoon.PlatoonRealId + " payload " + payloadser);
                             var message = new BitArray(_dataLenght);
                             message.Set(0, false);
                             message.Set(1, false);
                             message.Set(2, true);
 
-                            Server.PublishAsync("platooning/" + platoonLead.ClientId + "/" + isFollowing.VechicleId,
+                            Server.PublishAsync("platooning/" + platoonLead.ClientId + "/" + tree[2],
                                 Encoding.ASCII.GetString(Functions.BitArrayToByteArray(message)));
                         }
                     }
                     else if (payload.Maneuver == Maneuver.JoinAccepted)
                     {
                         Console.WriteLine($"[{DateTime.Now}] Join accepted Client Id " + e.ClientId + " payload " +
-                                          audit.Payload);
-                        //var splitTopic = e.ApplicationMessage.Topic.Split("/");
+                                          payloadser);
                         var followvehicleId = tree[1];
                         var leadVehicle = tree[2];
                         var plattonId = tree[3];
@@ -318,13 +337,13 @@ namespace Mqtt.Application.Services.Hosted
                                 _repo.AddPlatoon(platoon);
                             }
                         }
-                    }else if (payload.Maneuver == Maneuver.JoinRejected)
+                    }
+                    else if (payload.Maneuver == Maneuver.JoinRejected)
                     {
                         Console.WriteLine($"[{DateTime.Now}] Join rejected Client Id " + e.ClientId + " payload " +
-                                          audit.Payload);
-                        var followvehicleId = tree[1];
+                                          payloadser);
                         var platoonfollow = _repo.GetPlatoon()
-                            .FirstOrDefault(f => f.IsFollower && f.ClientId == followvehicleId);
+                            .FirstOrDefault(f => f.IsFollower && f.ClientId == tree[1]);
 
                         if (platoonfollow != null)
                         {
@@ -336,7 +355,7 @@ namespace Mqtt.Application.Services.Hosted
                         var log = new Log
                         {
                             Exception = new string("Unknown Maneuver " +
-                                                   JsonConvert.SerializeObject(payload, Formatting.Indented) + " " +
+                                                   payloadser+ " " +
                                                    e.ClientId)
                         };
                         _repo.AddLogAsync(log);
@@ -351,8 +370,12 @@ namespace Mqtt.Application.Services.Hosted
                     };
                     _repo.AddLogAsync(log);
                 }
+                finally
+                {
+                    _repo.SaveChangesAsync(cancellationToken);
+                }
 
-                _repo.SaveChanges();
+                
                 OnDataReceived(e.ApplicationMessage.Payload);
             });
         }

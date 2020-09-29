@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Mqtt.Context.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200922061335_InitialCreate")]
+    [Migration("20200928232624_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,6 @@ namespace Mqtt.Context.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("ClientId")
-                        .HasColumnName("ClientId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreationDate")
@@ -39,7 +38,6 @@ namespace Mqtt.Context.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Topic")
-                        .HasColumnName("Topic")
                         .HasColumnType("text");
 
                     b.Property<string>("Type")

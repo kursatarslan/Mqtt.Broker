@@ -27,7 +27,6 @@ namespace Mqtt.Context.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("ClientId")
-                        .HasColumnName("ClientId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreationDate")
@@ -37,7 +36,6 @@ namespace Mqtt.Context.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Topic")
-                        .HasColumnName("Topic")
                         .HasColumnType("text");
 
                     b.Property<string>("Type")

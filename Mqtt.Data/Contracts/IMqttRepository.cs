@@ -13,7 +13,7 @@ namespace Mqtt.Data.Contracts
         bool SaveChanges();
         Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
         Guid AddMessage(MqttMessage message);
-        Task<bool> AddLogAsync(Log log);
+        int AddLogAsync(Log log);
         int AddAudit(Audit audit);
         void UpdatePlatoon(Platoon platoon);
         void DeletePlatoon(Platoon platoon);
