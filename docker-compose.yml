@@ -39,6 +39,8 @@ services:
     restart: always
     depends_on:
       - postgresql
+    volumes:
+      - pgmqtt_data:/app
 volumes:
   pgmqtt_data:
     name: pgmqtt_data

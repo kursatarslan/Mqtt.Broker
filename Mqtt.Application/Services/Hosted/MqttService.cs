@@ -13,6 +13,7 @@ using Mqtt.Data.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mqtt.Application.Helpers;
 using Mqtt.Domain.Enums;
 using MQTTnet.Client.Receiving;
@@ -64,6 +65,7 @@ namespace Mqtt.Application.Services.Hosted
             {
                 Console.WriteLine("Mqtt Broker start " + e);
             });
+            
             Server.StoppedHandler = new MqttServerStoppedHandlerDelegate(e =>
             {
                 Console.WriteLine("Mqtt Broker stop " + e);
@@ -129,10 +131,11 @@ namespace Mqtt.Application.Services.Hosted
                     _logger.LogInformation($"[{DateTime.Now}] Client '{clientId}' un-subscribed to {topicFilter}.");
                     try
                     {
-                        var sub = _repo.GetSubscribeById(e.ClientId);
+                        var sub = _repo.GetSubscribeById(e.ClientId).Where(s => s.Topic == topicFilter);
                         var subscribes = sub as List<Subscribe> ?? sub.ToList();
-                        if (!subscribes.Any()) return;
-                        subscribes.ForEach(a => a.Enable = false);
+                        if (subscribes.All(a => a.Topic != topicFilter)) return;
+                        subscribes
+                            .ForEach(a => a.Enable = false);
                     }
                     catch (Exception exception)
                     {
@@ -204,9 +207,14 @@ namespace Mqtt.Application.Services.Hosted
                             " Client Id " + e.ClientId + " payload " +
                             payload);
 
-                        var platoon = _repo.GetPlatoon();
-                        var enumerable = platoon as Platoon[] ?? platoon.ToArray();
-                        _repo.DeletePlatoonRange(enumerable.ToArray());
+                        var platoonlist = _repo.GetPlatoon().Where(a => a.IsFollower);
+                        var platoonlistArray = platoonlist as Platoon[] ?? platoonlist.ToArray();
+                        foreach (var platoon in platoonlistArray)
+                        {
+                            Server.UnsubscribeAsync(platoon.ClientId, "platooning/broadcast/" + platoon.PlatoonRealId);
+                        }
+                        
+                        _repo.DeletePlatoonRange(platoonlistArray);
                     }
 
                     if (payload.Maneuver == Maneuver.CreatePlatoon)

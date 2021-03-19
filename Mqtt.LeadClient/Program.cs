@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using MQTTnet;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
@@ -13,9 +15,10 @@ namespace Mqtt.LeadClient
 {
     internal class Program
     {
-        private const string leadvehicle = "leadvehicle";
+        private const string leadvehicle = "leadVehicle1";
         private const string platoonId = "platoon1";
         private const int bitcount = 64;
+        public static IConfigurationRoot configuration; 
 
 
         public static IManagedMqttClient client =
@@ -23,13 +26,17 @@ namespace Mqtt.LeadClient
 
         private static void Main(string[] args)
         {
-            
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Path.Combine(AppContext.BaseDirectory))
+            .AddJsonFile("appsettings.json", optional: true);
+            configuration = builder.Build();
+
             _ = ConnectAsync();
             do {
                 while (!Console.KeyAvailable) {
                     if (Console.ReadKey(true).Key == ConsoleKey.S)
                     {
-                        _ = SubscribeAsync("platooning/" + leadvehicle + "/#");
+                        _ = SubscribeAsync(@$"platooning/{leadvehicle}/#");
                         Console.WriteLine("Client SubscribeAsync as  " + "platooning/" + leadvehicle + "/#");
                     }else if (Console.ReadKey(true).Key == ConsoleKey.P)
                     {
@@ -79,10 +86,10 @@ namespace Mqtt.LeadClient
         private static async Task ConnectAsync()
         {
             //const string mqttUri = "mqttbroker.westeurope.azurecontainer.io";
-            const string mqttUri = "localhost";
-            var mqttUser = "test";
-            var mqttPassword = "test";
-            var mqttPort = 1883;
+            string mqttUri = configuration["mqttServerIp"];
+            var mqttUser = configuration["mqttUser"];;
+            var mqttPassword = configuration["mqttPassword"];;
+            var mqttPort = Convert.ToInt32(configuration["mqttPort"]);
             Console.WriteLine($"MQTT Server:{mqttUri} Username:{mqttUser} ClientID:{leadvehicle}");
             var messageBuilder = new MqttClientOptionsBuilder()
                 .WithClientId(leadvehicle)

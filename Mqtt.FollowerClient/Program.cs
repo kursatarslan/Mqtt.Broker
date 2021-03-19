@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using MQTTnet;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
@@ -15,14 +17,20 @@ namespace Mqtt.FollowerClient
 {
     internal class Program
     {
-        private const string clientId = "followingVehicle";
+        private const string clientId = "followingVehicle1";
+        public static IConfigurationRoot configuration; 
 
 
         public static IManagedMqttClient client =
-            new MqttFactory().CreateManagedMqttClient(new MqttNetLogger("followingVehicle"));
+            new MqttFactory().CreateManagedMqttClient(new MqttNetLogger(clientId));
 
         private static void Main(string[] args)
         {
+             var builder = new ConfigurationBuilder()
+            .SetBasePath(Path.Combine(AppContext.BaseDirectory))
+            .AddJsonFile("appsettings.json", optional: true);
+            configuration = builder.Build();
+
             
             _ = ConnectAsync();
             do {
@@ -55,16 +63,13 @@ namespace Mqtt.FollowerClient
             //0x111 
             return new byte[4];
         }
-
-        
-
         private static async Task ConnectAsync()
         {
-            //const string mqttUri = "mqttbroker.westeurope.azurecontainer.io";
-            const string mqttUri = "localhost";
-            var mqttUser = "test";
-            var mqttPassword = "test";
-            var mqttPort = 1883;
+            string mqttUri = configuration["mqttServerIp"];
+            //const string mqttUri = "localhost";
+            var mqttUser = configuration["mqttUser"];
+            var mqttPassword = configuration["mqttPassword"];
+            var mqttPort = Convert.ToInt32(configuration["mqttPort"]);
             Console.WriteLine($"MQTT Server:{mqttUri} Username:{mqttUser} ClientID:{clientId}");
             var messageBuilder = new MqttClientOptionsBuilder()
                 .WithClientId(clientId)
@@ -103,7 +108,7 @@ namespace Mqtt.FollowerClient
                         if (payload.Maneuver == 2 )
                         { 
                             
-                            _ = SubscribeAsync("platooning/broadcast/" + platoonId + "/#");
+                            _ = SubscribeAsync($@"platooning/broadcast/{platoonId}/#");
                             Console.WriteLine("Client SubscribeAsync as  " + "platooning/broadcast/" + platoonId + "/#");
                         }
                     }
