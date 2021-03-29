@@ -1,22 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Mqtt.Application.Contracts;
-using Mqtt.Application.Services;
-using Mqtt.Application.Services.Hosted;
 using Mqtt.Context;
-using Mqtt.Data.Contracts;
-using Mqtt.Data.Repositories;
-using MQTTnet;
-using MQTTnet.Server;
-using NLog.Extensions.Hosting;
+using NpgsqlTypes;
+using Serilog;
 
 namespace Mqtt.WebApi
 {
@@ -24,6 +16,16 @@ namespace Mqtt.WebApi
     {
         public static void Main(string[] args)
         {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile(@"appsettings.json", false, true)               
+                .Build();
+
+            Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()  
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
+
             var host = CreateHostBuilder(args).Build();
             var context = host.Services.GetRequiredService<DataContext>();
             //context.Database.EnsureDeleted();
@@ -35,6 +37,7 @@ namespace Mqtt.WebApi
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>()
@@ -43,12 +46,7 @@ namespace Mqtt.WebApi
                         options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
                         options.ValidateOnBuild = true;
                     });
-                }).ConfigureLogging(loggerBuilder =>
-                {
-                    loggerBuilder.ClearProviders();
-                    loggerBuilder.AddConsole();
-                    loggerBuilder.SetMinimumLevel(LogLevel.Warning);
-                }).UseNLog().UseDefaultServiceProvider(options =>
+                }).UseDefaultServiceProvider(options =>
                     options.ValidateScopes = false);
     }
 }

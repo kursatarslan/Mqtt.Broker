@@ -13,8 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Server;
-using NLog.Extensions.Hosting;
-
+using Serilog;
 
 namespace Mqtt.Server
 {
@@ -22,6 +21,15 @@ namespace Mqtt.Server
     {
         static async Task Main(string[] args)
         {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Environment.CurrentDirectory)
+                .AddJsonFile(@"appsettings.json", false, true)               
+                .Build();
+
+            Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
+
             var host = CreateHostBuilder(args).Build();
             var context = host.Services.GetRequiredService<DataContext>();
             //context.Database.EnsureDeleted();
@@ -33,6 +41,7 @@ namespace Mqtt.Server
 
         private static IHostBuilder CreateHostBuilder(string[] args)
             => Host.CreateDefaultBuilder(args)
+                .UseSerilog()
                 .ConfigureServices((hostContext, services) =>
                 {
                     var configuration = hostContext.Configuration;
@@ -65,14 +74,6 @@ namespace Mqtt.Server
                         options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Mqtt.Context")));
                     
                     services.AddHostedService<MqttService>();
-                })
-                .ConfigureLogging(
-                    logging =>
-                    {
-                        logging.ClearProviders();
-                        logging.AddConsole();
-                        logging.SetMinimumLevel(LogLevel.Trace);
-                    })
-                .UseNLog();
+                });
     }
 }

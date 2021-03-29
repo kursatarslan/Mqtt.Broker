@@ -72,6 +72,7 @@ namespace Mqtt.WebApi
             {
                 options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Mqtt.Context"));
             },ServiceLifetime.Transient);
+            services.AddTransient<Func<DataContext>>(options => () => options.GetService<DataContext>());
             
             services.AddHostedService<MqttService>();
         }

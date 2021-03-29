@@ -1,11 +1,11 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 EXPOSE 8883 1883 80 7000
 
 # 1883  MQTT
 # 8883  MQTT/SSL
 # 8080  MQTT WebSockets
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
 
 # Copy only API for restore packages

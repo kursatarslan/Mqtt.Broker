@@ -9,7 +9,7 @@ properties:
     properties:
       environmentVariables:
       - name: ConnectionStrings__postgres
-        value: Host=arslan.postgres.database.azure.com;Port=5432;Username=kursat@arslan;Password=*****;Database=mqtt;Maximum Pool Size=500;Connection Idle Lifetime=120;Connection Pruning Interval=10;Timeout=10;Command Timeout=10;
+        value: Host=arslan.postgres.database.azure.com;Port=5432;Username=kursat@arslan;Password=28918668_Gga;Database=mqtt;
       - name: Settings__Host
         value: mqttbroker.azurewebsites.net
       image: kursatarslan/mqttbroker
@@ -20,6 +20,8 @@ properties:
         protocol: TCP
       - port: 8883
         protocol: TCP
+      - port: 7000
+        protocol: TCP
       resources:
         requests:
           cpu: 1.0
@@ -27,13 +29,15 @@ properties:
   ipAddress:
     dnsNameLabel: mqttbroker
     fqdn: mqttbroker.westeurope.azurecontainer.io
-    ip: 20.61.8.163
+    ip: 20.54.241.124
     ports:
     - port: 80
       protocol: TCP
     - port: 1883
       protocol: TCP
     - port: 8883
+      protocol: TCP
+    - port: 7000
       protocol: TCP
     type: Public
   osType: Linux

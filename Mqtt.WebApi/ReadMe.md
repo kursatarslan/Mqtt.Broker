@@ -14,8 +14,10 @@ openssl pkcs12 -export -out webserver.pfx -inkey key.pem -in cert.pem
 ## Local
 docker run -p 5432:5432 --name postgres -e POSTGRES_PASSWORD=postgres -d postgres
 
+docker run -p 8883:8883 -p 1883:1883 -p 80:80 -p 7000:7000  --name mqttbroker  -d mqttbroker
+
 ## you can generate db using this command
-dotnet ef database update
+dotnet ef database update --startup-project ../Mqtt.WebApi/Mqtt.WebApi.csproj 
 
 ## migration
 dotnet ef migrations add InitialCreate --startup-project ../Mqtt.Server/Mqtt.Server.csproj 
@@ -23,7 +25,7 @@ dotnet ef migrations add InitialCreate --startup-project ../Mqtt.Server/Mqtt.Ser
 ## Azure
 az container export -g mqttbroker --name mqttcontainer -f azcontainer.yaml
 az container delete --name MyContainerGroup --resource-group mqttbroker
-az container create -g mqttbroker -f containerGroup.yaml
+az container create -g mqttbroker -f azcontainer.yaml
 
 
 
