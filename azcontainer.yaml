@@ -9,7 +9,7 @@ properties:
     properties:
       environmentVariables:
       - name: ConnectionStrings__postgres
-        value: Host=arslan.postgres.database.azure.com;Port=5432;Username=kursat@arslan;Password=28918668_Gga;Database=mqtt;
+        value: Host=arslan.postgres.database.azure.com;Port=5432;Username=kursat@arslan;Password=*****;Database=mqtt;
       - name: Settings__Host
         value: mqttbroker.azurewebsites.net
       image: kursatarslan/mqttbroker
