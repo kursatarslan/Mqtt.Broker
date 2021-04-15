@@ -2,7 +2,7 @@
 
 </br>
 
-## Azure Api && Mqtt Broker Server
+## Azure Api & Mqtt Broker Server
 
 https://mqtt-broker.azurewebsites.net/
 
@@ -13,50 +13,58 @@ https://mqtt-broker.azurewebsites.net/
 "mqttPort": 1883
 }
 
-## Terminal 1 = MqttBroker
 
-Mqtt.Broker git:(master) ✗ dotnet restore
+## Terminal 1 = MqttBroker Server
+// Run following commands to initialize the local mqttbroker server
 
-Mqtt.Broker git:(master) ✗ dotnet build
+    dotnet restore
 
-Mqtt.Broker git:(master) ✗ cd Mqtt.Server
+    dotnet build
 
-Mqtt.Server git:(master) ✗ dotnet run
+    cd Mqtt.Server
+
+    dotnet run
+    
 </br></br></br>
 
 ## Terminal 2 = Mqtt Lead Vehicle
+// With the following commands, lead vehicle connects to the server using basic authentication
 
-Mqtt.Broker git:(master) ✗ cd Mqtt.LeadClient
+    cd Mqtt.LeadClient
 
-Mqtt.LeadClient git:(master) ✗ dotnet run
+    dotnet run
 
--- When you run the code lead vehicle connect to the server using basic authentication
-
-### OutPut
+### You will see an ouput like this:
 
 MQTT Server:mqttbroker.westeurope.azurecontainer.io Username:test ClientID:leadVehicle1
 Connected successfully with MQTT Brokers.
 
 ## Terminal 3 = Mqtt Follower Vehicle
 
-Mqtt.Broker git:(master) ✗ cd Mqtt.FollowerClient
+    cd Mqtt.FollowerClient
 
-Mqtt.FollowerClient git:(master) ✗ dotnet run
+    dotnet run
+ 
+### You will see an ouput like this:
 MQTT Server:mqttbroker.westeurope.azurecontainer.io Username:test ClientID:followingVehicle1
 Connected successfully with MQTT Brokers.
 
 ## Hierarchy
 
-After connection, lead vehicle, it has to be subscribed your own topic
-At terminal 2, press "S" keyboard to subscribe @$"platooning/{leadvehicle}/#"
+After the connection has been established, the lead vehicle has to subscribe to your own topic
 
-OutPut
+At Terminal 2, press "S" key to subscribe @$"platooning/{leadvehicleId}/#"
+
+### You will see an ouput like this:
+
 Mqtt.LeadClient git:(master) ✗ Client SubscribeAsync as platooning/leadVehicle1/#
 
-You can check
+
+You can see the list of subscribes wehicles with the following url: 
 
 https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
 
+Example List: 
 [
 {
 "id": 5,
@@ -68,12 +76,16 @@ https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
 }
 ]
 
-After that, you can create new platoon for press "P" for Lead Vehicle
+After that, you can create a new platoon by pressing "P" for Lead Vehicle
 
+### You will see an ouput like this:
 Mqtt.LeadClient git:(master) ✗ Client Publish as platooning/message/leadVehicle1/platoon1 payload =>
 
+
+You can see the list of platoons with the following url: 
 https://mqtt-broker.azurewebsites.net/Service/GetPlatoon
 
+Example List:
 [
 {
 "id": 11,
@@ -88,13 +100,18 @@ https://mqtt-broker.azurewebsites.net/Service/GetPlatoon
 }
 ]
 
-Now lead vehicle can wait for new following vehicles for joining the platoon.
+Now lead vehicle can wait for new following vehicles to join the platoon.
 
-At following vehicle has to join its topic for getting direct messages that come to it
-At terminal 3, press "S" keyboard to subscribe @$"platooning/{followingvehicle}/#"
+The following vehicles have to join their topics for receive direct messages
+
+At terminal 3, press "S" key to subscribe @$"platooning/{followingvehicleId}/#"
+
+### You will see an ouput like this:
 Mqtt.FollowerClient git:(master) Client SubscribeAsync as platooning/followingVehicle1/#
 
+To see the subscribers list:
 https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
+
 
 [
 {
@@ -115,9 +132,11 @@ https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
 }
 ]
 
-After that,following vehicle want to join active platoon that Lead vehicle has already created
-Press "S" keyborad button on terminal 3
+After that, the following vehicle wants to join an active platoon that Lead vehicle has already created
 
+Press "S" key on terminal 3
+
+### You will see an ouput like this:
 Mqtt.FollowerClient git:(master) Client Publish joining spesific platoon at the broker as platooning/message/followingVehicle1 payload =>
 
 Topic: platooning/followingVehicle1/leadVehicle1/platoon1. Message Received: {
