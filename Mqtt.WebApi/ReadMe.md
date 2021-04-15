@@ -27,6 +27,8 @@ az container export -g mqttbroker --name mqttcontainer -f azcontainer.yaml
 az container delete --name MyContainerGroup --resource-group mqttbroker
 az container create -g mqttbroker -f azcontainer.yaml
 
+![img.png](img.png)
+
 
 
 

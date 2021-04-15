@@ -191,3 +191,8 @@ https://mqtt-broker.azurewebsites.net/Service/GetConnection
 mosquitto_sub -h mqttbroker.westeurope.azurecontainer.io -p 1883 -t 'platooning/sdfsdf/#' -i "Device1" -u test -P test -v
 
 mosquitto_pub -h mqttbroker.westeurope.azurecontainer.io -p 1883 -t 'platooning/sdfsdf/sdsd' -i "Device2" -u test -P test -m "asda"
+
+## Flow Diagram
+![img.png](img.png)
+
+![img_1.png](img_1.png)
