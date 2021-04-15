@@ -1,4 +1,4 @@
-# Start Projects 
+# Start Projects
 </br>
 
 
@@ -21,20 +21,20 @@ Mqtt.Broker git:(master) ✗ dotnet restore
 
 Mqtt.Broker git:(master) ✗ dotnet build
 
-Mqtt.Broker git:(master) ✗ cd Mqtt.Server 
+Mqtt.Broker git:(master) ✗ cd Mqtt.Server
 
-Mqtt.Server git:(master) ✗ dotnet run 
+Mqtt.Server git:(master) ✗ dotnet run
 </br></br></br>
 
 
-## Terminal 2 = Mqtt Lead Vehicle 
+## Terminal 2 = Mqtt Lead Vehicle
 
 
-Mqtt.Broker git:(master) ✗ cd Mqtt.LeadClient 
+Mqtt.Broker git:(master) ✗ cd Mqtt.LeadClient
 
 Mqtt.LeadClient git:(master) ✗ dotnet run
 
--- When you run the code lead vehicle connect to the server using basic authentication 
+-- When you run the code lead vehicle connect to the server using basic authentication
 ### OutPut
 MQTT Server:mqttbroker.westeurope.azurecontainer.io Username:test ClientID:leadVehicle1
 Connected successfully with MQTT Brokers.
@@ -42,25 +42,25 @@ Connected successfully with MQTT Brokers.
 
 
 
-## Terminal 3 = Mqtt Follower Vehicle 
+## Terminal 3 = Mqtt Follower Vehicle
 
-Mqtt.Broker git:(master) ✗ cd Mqtt.FollowerClient 
+Mqtt.Broker git:(master) ✗ cd Mqtt.FollowerClient
 
-Mqtt.FollowerClient git:(master) ✗ dotnet run 
+Mqtt.FollowerClient git:(master) ✗ dotnet run
 MQTT Server:mqttbroker.westeurope.azurecontainer.io Username:test ClientID:followingVehicle1
 Connected successfully with MQTT Brokers.
 
 
 
-## Hierarchy 
+## Hierarchy
 
-After connection, lead vehicle, it has to be subscribed your own topic 
+After connection, lead vehicle, it has to be subscribed your own topic
 At terminal 2, press "S" keyboard to subscribe  @$"platooning/{leadvehicle}/#"
 
-OutPut 
+OutPut
 Mqtt.LeadClient git:(master) ✗ Client SubscribeAsync as  platooning/leadVehicle1/#
 
-You can check 
+You can check
 
 https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
 
@@ -98,7 +98,7 @@ https://mqtt-broker.azurewebsites.net/Service/GetPlatoon
 
 Now lead vehicle can wait for new following vehicles for joining the platoon.
 
-At following vehicle has to join its topic for getting direct messages that come to it 
+At following vehicle has to join its topic for getting direct messages that come to it
 At terminal 3, press "S" keyboard to subscribe  @$"platooning/{followingvehicle}/#"
 Mqtt.FollowerClient git:(master) Client SubscribeAsync as  platooning/followingVehicle1/#
 
@@ -124,10 +124,10 @@ https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
     }
 ]
 
-After that,following vehicle want to join active platoon that Lead vehicle has already created 
+After that,following vehicle want to join active platoon that Lead vehicle has already created
 Press "S" keyborad button on terminal 3
 
-Mqtt.FollowerClient git:(master)  Client Publish joining spesific platoon at the broker as  platooning/message/followingVehicle1  payload => 
+Mqtt.FollowerClient git:(master)  Client Publish joining spesific platoon at the broker as  platooning/message/followingVehicle1  payload =>
 
 Topic: platooning/followingVehicle1/leadVehicle1/platoon1. Message Received: {
   "Maneuver": 2,
@@ -168,15 +168,15 @@ https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
 https://mqtt-broker.azurewebsites.net/Service/GetPlatoon
 
 
-Finally, at terminal 2, lead vehicle terminal, we can start the broadcasting message for all following vehicles 
+Finally, at terminal 2, lead vehicle terminal, we can start the broadcasting message for all following vehicles
 
 Press "K" for broadcasting
 
-Client Publish as  platooning/broadcast/platoon1  payload => 
+Client Publish as  platooning/broadcast/platoon1  payload =>
 
 
 
-### API Services 
+### API Services
 
 
 https://mqtt-broker.azurewebsites.net/Service/Getplatoon
@@ -193,10 +193,7 @@ mosquitto_sub -h mqttbroker.westeurope.azurecontainer.io -p 1883 -t 'platooning/
 mosquitto_pub -h mqttbroker.westeurope.azurecontainer.io -p 1883 -t 'platooning/sdfsdf/sdsd' -i "Device2" -u test -P test -m "asda"
 
 ## Flow Diagram
-![img.png](img.png)
 
-![img_1.png](img_1.png)
-
-![img_2.png](img_2.png)
-
-![img_3.png](img_3.png)
+![part1.png](part1.png)
+![part2.png](part2.png)
+![part3.png](part3.png)
