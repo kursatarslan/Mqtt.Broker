@@ -1,5 +1,5 @@
 # Start Projects 
-</br>
+
 
 
 ## Azure Api && Mqtt Broker Server
@@ -125,7 +125,7 @@ https://mqtt-broker.azurewebsites.net/Service/GetSubscribe
 ]
 
 After that,following vehicle want to join active platoon that Lead vehicle has already created 
-Press "S" keyborad button on terminal 3
+Press "P" keyborad button on terminal 3
 
 Mqtt.FollowerClient git:(master)  Client Publish joining spesific platoon at the broker as  platooning/message/followingVehicle1  payload => 
 
@@ -157,7 +157,7 @@ Topic: platooning/broadcast/platoon1. Message Received: {
   "RealPayload": "{\n  \"Id\": 0,\n  \"Maneuver\": 6,\n  \"PlatoonGap\": 0,\n  \"PlatoonOverrideStatus\": false,\n  \"VehicleRank\": 0,\n  \"BreakPedal\": 0,\n  \"PlatoonDissolveStatus\": false,\n  \"StationId\": 0,\n  \"StreamingRequests\": 0,\n  \"V2HealthStatus\": false,\n  \"TruckRoutingStaus\": 0,\n  \"RealPayload\": \"\\u0003\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\"\n}"
 }
 
-These informations shows us Mwtt Server got a joining message from following vehicle and request accepted by lead vehicle aoutmatically for testing, after accepting lead vehicle send its initial condition to following vehicle via broadcasting channel "platooning/broadcast/platoon1"
+This information shows us Mqtt Server got a joining message from following vehicle and request accepted by lead vehicle automatically for testing, after accepting lead vehicle send its initial condition to following vehicle via broadcasting channel "platooning/broadcast/platoon1"
 
 You can check all request hierarchies using rest api services
 
