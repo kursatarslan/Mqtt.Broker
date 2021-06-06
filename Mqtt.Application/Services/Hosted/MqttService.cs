@@ -202,19 +202,33 @@ namespace Mqtt.Application.Services.Hosted
 
                     if (payload.PlatoonDissolveStatus)
                     {
-                        Console.WriteLine(
-                            $"[{DateTime.Now}] PlatoonDissolveStatus is true all platoon infor must be deleted" +
-                            " Client Id " + e.ClientId + " payload " +
-                            payload);
+                        if(_repo.GetPlatoon().Any(a => a.ClientId == e.ClientId && a.IsLead)) {
+                            Console.WriteLine(
+                                $"[{DateTime.Now}] This is lead Vehicle PlatoonDissolveStatus is true all platoon infor must be deleted" +
+                                " Client Id " + e.ClientId + " payload " +
+                                payload);
 
-                        var platoonlist = _repo.GetPlatoon().Where(a => a.IsFollower);
-                        var platoonlistArray = platoonlist as Platoon[] ?? platoonlist.ToArray();
-                        foreach (var platoon in platoonlistArray)
-                        {
-                            Server.UnsubscribeAsync(platoon.ClientId, "platooning/broadcast/" + platoon.PlatoonRealId);
+                            var platoonlist = _repo.GetPlatoon().Where(a => a.IsFollower);
+                            var platoonlistArray = platoonlist as Platoon[] ?? platoonlist.ToArray();
+                            foreach (var platoon in platoonlistArray)
+                            {
+                                Server.UnsubscribeAsync(platoon.ClientId, "platooning/broadcast/" + platoon.PlatoonRealId);
+                                Server.UnsubscribeAsync(platoon.ClientId, "platooning/" + platoon.ClientId);
+                            }
+                            
+                            _repo.DeletePlatoonRange(platoonlistArray);
                         }
-                        
-                        _repo.DeletePlatoonRange(platoonlistArray);
+                        else
+                        {
+                                Console.WriteLine(
+                                $"[{DateTime.Now}] This is following Vehicle PlatoonDissolveStatus is true all platoon infor must be deleted" +
+                                " Client Id " + e.ClientId + " payload " +
+                                payload);
+
+                                var followingVehicle = _repo.GetPlatoon().FirstOrDefault(a => a.IsFollower && a.ClientId == e.ClientId);
+                                Server.UnsubscribeAsync(followingVehicle.ClientId, "platooning/" + followingVehicle.ClientId);
+                                _repo.DeletePlatoon(followingVehicle);
+                        }
                     }
 
                     if (payload.Maneuver == Maneuver.CreatePlatoon)

@@ -34,7 +34,7 @@ namespace Mqtt.Server
             var context = host.Services.GetRequiredService<DataContext>();
             //context.Database.EnsureDeleted();
             context.Database.Migrate();
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             Storage.Seed(context);
             await host.RunAsync();
         }
@@ -56,7 +56,7 @@ namespace Mqtt.Server
                     ISecretProvider sp = new SecretProvider();
                     services.AddSingleton(sp);
                     var stage = Environment.GetEnvironmentVariable("STAGE") ?? "Development";
-                    var connectionString = string.Empty;
+                    string connectionString;
                     if (stage == "Development")
                     {
                         connectionString = configuration.GetConnectionString("postgres");
