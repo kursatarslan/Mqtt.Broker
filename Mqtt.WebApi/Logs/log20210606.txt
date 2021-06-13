@@ -1,0 +1,5 @@
+2021-06-06 20:29:12.070 +01:00 [INF] OnStarted has been called.
+2021-06-06 20:30:15.283 +01:00 [INF] New connection: ClientId = leadVehicle1, Endpoint = [::1]:63531, Username = test, CleanSession = True
+2021-06-06 20:30:35.497 +01:00 [INF] New Subcription: ClientId = leadVehicle1, TopicFilter = TopicFilter: [Topic=platooning/leadVehicle1/#] [QualityOfServiceLevel=AtLeastOnce] [NoLocal=] [RetainAsPublished=] [RetainHandling=], AcceptSubscription = True, SessionItems = System.Collections.Concurrent.ConcurrentDictionary`2[System.Object,System.Object]
+2021-06-06 20:30:35.500 +01:00 [INF] Client subscribed leadVehicle1 topic platooning/leadVehicle1/#Vehicle Id leadVehicle1
+2021-06-06 20:34:53.272 +01:00 [INF] New connection: ClientId = followingVehicle1, Endpoint = [::1]:64690, Username = test, CleanSession = True

@@ -1,0 +1,4 @@
+2021-06-07 01:28:23.697 +01:00 [INF] New connection: ClientId = leadVehicle1, Endpoint = [::1]:50917, Username = test, CleanSession = True
+2021-06-07 01:28:23.701 +01:00 [INF] New Subcription: ClientId = leadVehicle1, TopicFilter = TopicFilter: [Topic=platooning/leadVehicle1/#] [QualityOfServiceLevel=AtLeastOnce] [NoLocal=] [RetainAsPublished=] [RetainHandling=], AcceptSubscription = True, SessionItems = System.Collections.Concurrent.ConcurrentDictionary`2[System.Object,System.Object]
+2021-06-07 01:28:23.702 +01:00 [INF] Client subscribed leadVehicle1 topic platooning/leadVehicle1/#Vehicle Id leadVehicle1
+2021-06-07 01:28:23.710 +01:00 [INF] There is a subcribe like ClientID leadVehicle1.
