@@ -67,13 +67,14 @@ namespace Mqtt.Application.Helpers
       var payload = new Payload();
       var bitArray = new BitArray(serverPayload);
 
-      payload.StationId = Convert.ToInt32(Functions.ToBitString(bitArray, 0, 32), 2);
-      payload.Maneuver = (Maneuver)Convert.ToInt32(Functions.ToBitString(bitArray, 320, 323), 2);
+      payload.StationId = Convert.ToUInt32(Functions.ToBitString(bitArray, 0, 32), 2);
+      payload.MyPlatoonId = Convert.ToUInt32(Functions.ToBitString(bitArray, 288, 320), 2);
+      payload.Maneuver = (Maneuver)Convert.ToUInt32(Functions.ToBitString(bitArray, 320, 323), 2);
       // payload.PlatoonGap = Convert.ToInt32(Functions.ToBitString(bitArray, 3, 11), 2);
       //payload.PlatoonOverrideStatus = Convert.ToInt32(Functions.ToBitString(bitArray, 11, 12), 2) != 0;
       //payload.VehicleRank = Convert.ToInt32(Functions.ToBitString(bitArray, 12, 16), 2);
       //payload.BreakPedal = Convert.ToInt32(Functions.ToBitString(bitArray, 16, 23), 2);
-      payload.PlatoonDissolveStatus = Convert.ToInt32(Functions.ToBitString(bitArray, 344, 347), 2) != 0;
+      payload.PlatoonDissolveStatus = Convert.ToUInt32(Functions.ToBitString(bitArray, 344, 352), 2) != 0;
       //payload.StreamingRequests = Convert.ToInt32(Functions.ToBitString(bitArray, 56, 58), 2);
       //payload.V2HealthStatus = Convert.ToInt32(Functions.ToBitString(bitArray, 58, 59), 2) != 0;
       //payload.TruckRoutingStaus = Convert.ToInt32(Functions.ToBitString(bitArray, 59, 61), 2);

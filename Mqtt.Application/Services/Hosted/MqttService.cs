@@ -32,6 +32,18 @@ namespace Mqtt.Application.Services.Hosted
     public event EventHandler<byte[]> DataReceived;
     public IMqttServer Server { get; set; }
 
+    string ToBitString(BitArray bits, int indexStart, int indexFinish)
+    {
+      var sb = new StringBuilder();
+
+      for (var i = indexStart; i < indexFinish; i++)
+      {
+        var c = bits[i] ? '1' : '0';
+        sb.Append(c);
+      }
+
+      return sb.ToString();
+    }
     public MqttService(
         ILogger<MqttService> logger,
         IMqttServerSubscriptionInterceptor interceptor,
@@ -122,6 +134,7 @@ namespace Mqtt.Application.Services.Hosted
         }
       });
 
+
       Server.ClientUnsubscribedTopicHandler = new MqttServerClientUnsubscribedTopicHandlerDelegate(e =>
       {
         try
@@ -165,6 +178,16 @@ namespace Mqtt.Application.Services.Hosted
          try
          {
            if (e.ClientId == null) return;
+
+
+           var bitArray = new BitArray(e.ApplicationMessage.Payload);
+           Console.WriteLine("Byte Count:" + bitArray.Count / 8);
+           Console.WriteLine("All " + ToBitString(bitArray, 0, 1400));
+           Console.WriteLine("Received StationId: " + ToBitString(bitArray, 0, 32));
+           Console.WriteLine("Received MyPlatoonId: " + ToBitString(bitArray, 288, 320));
+           Console.WriteLine("Received Manuever: " + ToBitString(bitArray, 320, 328));
+           Console.WriteLine("Received DissolveStatus: " + ToBitString(bitArray, 344, 352));
+
            // If in an existing platoon
            var vehiclePlatoon = _repo.GetPlatoon().FirstOrDefault(a => a.ClientId == e.ClientId);
 
@@ -226,43 +249,41 @@ namespace Mqtt.Application.Services.Hosted
            else
            {
              var payload = Functions.GetPayload(e.ApplicationMessage.Payload);
-
-             switch (payload.Maneuver)
+             _logger.LogWarning("MyPlatoonId: " + payload.MyPlatoonId);
+             //Create Platoon
+             if (payload.MyPlatoonId > 0)
              {
-               case Maneuver.CreatePlatoon:
-                 var platoon = new Platoon()
-                 {
-                   Enable = true,
-                   ClientId = e.ClientId,
-                   IsLead = true,
-                   VechicleId = e.ClientId,
-                   PlatoonRealId = "1"
-                 };
-                 _repo.AddPlatoon(platoon);
-
-                 break;
-               case Maneuver.JoinRequest:
-                 if (vehiclePlatoon == null)
-                 {
-                   var platoonLead = _repo.GetPlatoon().FirstOrDefault(p => p.Enable == true && p.IsLead == true);
-                   if (platoonLead != null)
-                   {
-                     var followingPlatoon = new Platoon()
-                     {
-                       Enable = false,
-                       ClientId = e.ClientId,
-                       IsLead = false,
-                       IsFollower = true,
-                       VechicleId = e.ClientId,
-                       PlatoonRealId = "1"
-                     };
-                     _repo.AddPlatoon(followingPlatoon);
-                     Server.PublishAsync("platooning/" + platoonLead.ClientId, Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
-                   }
-                 }
-                 break;
+               var platoon = new Platoon()
+               {
+                 Enable = true,
+                 ClientId = e.ClientId,
+                 IsLead = true,
+                 VechicleId = e.ClientId,
+                 PlatoonRealId = "1"
+               };
+               _repo.AddPlatoon(platoon);
              }
-
+             else if (payload.Maneuver == Maneuver.JoinRequest)
+             {
+               if (vehiclePlatoon == null)
+               {
+                 var platoonLead = _repo.GetPlatoon().FirstOrDefault(p => p.Enable == true && p.IsLead == true);
+                 if (platoonLead != null)
+                 {
+                   var followingPlatoon = new Platoon()
+                   {
+                     Enable = false,
+                     ClientId = e.ClientId,
+                     IsLead = false,
+                     IsFollower = true,
+                     VechicleId = e.ClientId,
+                     PlatoonRealId = "1"
+                   };
+                   _repo.AddPlatoon(followingPlatoon);
+                   Server.PublishAsync("platooning/" + platoonLead.ClientId, Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+                 }
+               }
+             }
            }
          }
          catch (Exception exception)

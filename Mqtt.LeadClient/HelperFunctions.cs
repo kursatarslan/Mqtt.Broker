@@ -60,7 +60,10 @@ namespace Mqtt.LeadClient
       var payload = new Payload();
       var bitArray = new BitArray(serverPayload);
 
-      payload.Maneuver = Convert.ToInt32(ToBitString(bitArray, 320, 323), 2);
+      payload.StationId = Convert.ToUInt32(ToBitString(bitArray, 0, 32), 2);
+      payload.MyPlatoonId = Convert.ToUInt32(ToBitString(bitArray, 288, 320), 2);
+      payload.Maneuver = Convert.ToUInt32(ToBitString(bitArray, 320, 323), 2);
+      payload.PlatoonDissolveStatus = Convert.ToUInt16(ToBitString(bitArray, 344, 352), 2) > 0;
       // payload.PlatoonGap = Convert.ToInt32(ToBitString(bitArray, 3, 11), 2);
       // payload.PlatoonOverrideStatus = Convert.ToInt32(ToBitString(bitArray, 11, 12), 2) != 0;
       // payload.VehicleRank = Convert.ToInt32(ToBitString(bitArray, 12, 16), 2);
@@ -89,11 +92,13 @@ namespace Mqtt.LeadClient
 
       return sb.ToString();
     }
+
     public static byte[] BitArrayToByteArray(BitArray bits)
     {
       var ret = new byte[(bits.Length - 1) / 8 + 1];
       bits.CopyTo(ret, 0);
       return ret;
     }
+
   }
 }

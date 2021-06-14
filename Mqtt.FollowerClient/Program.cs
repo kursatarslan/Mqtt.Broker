@@ -56,10 +56,18 @@ namespace Mqtt.FollowerClient
           {
             var message = new BitArray(bitcount);
 
-            message.Set(1, true);
+            //StatationId 0-31 , set to 2
+            message.Set(30, true);
+
+            //Manuever 320-322 set to 1
             message.Set(320, false);
             message.Set(321, false);
             message.Set(322, true);
+
+            Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+            Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+            Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+            Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
             //string message = HelperFunctions.RandomString(5,true);
             _ = PublishAsync("platooning/message",
                 Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
@@ -76,9 +84,18 @@ namespace Mqtt.FollowerClient
     private static void SendDissolve()
     {
       var message = new BitArray(bitcount);
-      message.Set(1, true);
-      message.Set(344, true);
+      //StatationId 0-31 , set to 2
+      message.Set(30, true);
+
+      //Dissolve Status  344 -351
+      message.Set(351, true);
       //string message = HelperFunctions.RandomString(5,true);
+
+      Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+      Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+      Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+      Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
+
       _ = PublishAsync("platooning/message",
           Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
       Console.WriteLine("TimeStamp:[" + DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + "] Follower Publish as  " + "platooning/message");
@@ -90,10 +107,21 @@ namespace Mqtt.FollowerClient
     private static void SendManuever()
     {
       var message = new BitArray(bitcount);
-      message.Set(1, true);
+      //StatationId 0-31 , set to 2
+      message.Set(30, true);
+
+      //Manuever 320-322 set to 6 
       message.Set(320, true);
       message.Set(321, true);
       message.Set(322, false);
+
+
+      Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+      Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+      Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+      Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
+      Console.WriteLine("Message Sent: " + Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
+
       //string message = HelperFunctions.RandomString(5,true);
       _ = PublishAsync("platooning/message",
           Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
@@ -147,6 +175,14 @@ namespace Mqtt.FollowerClient
 
           if (!string.IsNullOrWhiteSpace(topic))
           {
+
+            var bitArray = new BitArray(e.ApplicationMessage.Payload);
+
+            Console.WriteLine("Received StationId: " + HelperFunctions.ToBitString(bitArray, 0, 32));
+            Console.WriteLine("Received MyPlatoonId: " + HelperFunctions.ToBitString(bitArray, 288, 320));
+            Console.WriteLine("Received Manuever: " + HelperFunctions.ToBitString(bitArray, 320, 328));
+            Console.WriteLine("Received DissolveStatus: " + HelperFunctions.ToBitString(bitArray, 344, 352));
+
             var payload = HelperFunctions.GetPayload(e.ApplicationMessage.Payload);
             Console.WriteLine($"Topic: {topic}. Message Received: {JsonConvert.SerializeObject(payload, Formatting.Indented)}");
             //  var platoonId = topic.Replace("platooning/" + clientId + "/", "").Split("/").Last();

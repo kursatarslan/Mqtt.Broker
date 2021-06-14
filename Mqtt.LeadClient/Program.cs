@@ -10,6 +10,7 @@ using MQTTnet.Client.Options;
 using MQTTnet.Diagnostics;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Protocol;
+using Newtonsoft.Json;
 
 namespace Mqtt.LeadClient
 {
@@ -46,15 +47,25 @@ namespace Mqtt.LeadClient
           else if (Console.ReadKey(true).Key == ConsoleKey.P)
           {
             var message = new BitArray(bitcount);
-            message.Set(0, true);
+            //StationId 0-31
+
+            message.Set(31, true);
+
+            //MyPlatoonId 288-319
+            message.Set(319, true);
+
             message.Set(320, true);
             message.Set(321, true);
             message.Set(322, true);
+
+            Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+            Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+            Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+            Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
             //string message = HelperFunctions.RandomString(5,true);
             _ = PublishAsync("platooning/message",
                 Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
-            Console.WriteLine("Client Publish as  " + "platooning/message" + "  payload => " +
-                              Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
+
           }
           else if (Console.ReadKey(true).Key == ConsoleKey.D)
           {
@@ -82,8 +93,20 @@ namespace Mqtt.LeadClient
     private static void SendDissolve()
     {
       var message = new BitArray(bitcount);
-      message.Set(0, true);
-      message.Set(344, true);
+      //StationId 0-31
+      message.Set(31, true);
+
+      //MyPlatoonId 288-319
+      message.Set(319, true);
+
+      //Dissolve Status
+      message.Set(351, true);
+
+
+      Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+      Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+      Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+      Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
       //string message = HelperFunctions.RandomString(5,true);
       _ = PublishAsync("platooning/message",
           Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
@@ -96,11 +119,23 @@ namespace Mqtt.LeadClient
     private static void SendManuever()
     {
       var message = new BitArray(bitcount);
-      message.Set(0, true);
+      //StationId 0-31
+      message.Set(31, true);
+
+      //MyPlatoonId 288-319
+      message.Set(319, true);
+
+      //Muanuever 320-322
       message.Set(320, true);
       message.Set(321, true);
       message.Set(322, false);
       //string message = HelperFunctions.RandomString(5,true);
+
+      Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+      Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+      Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+      Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
+
       _ = PublishAsync("platooning/message",
           Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
       Console.WriteLine("TimeStamp:[" + DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + "] SendManuever Client Publish as  " + "platooning/message");
@@ -166,8 +201,13 @@ namespace Mqtt.LeadClient
             var stringpayload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
             var bitArray = new BitArray(e.ApplicationMessage.Payload);
             var payload = HelperFunctions.GetPayload(e.ApplicationMessage.Payload);
-            var py = HelperFunctions.ToBitString(new BitArray(e.ApplicationMessage.Payload), 0, bitcount);
-            Console.WriteLine($"Topic: {topic}. Message Received: {py}");
+            //  var py = HelperFunctions.ToBitString(new BitArray(e.ApplicationMessage.Payload), 0, bitcount);
+
+            Console.WriteLine("Received StationId: " + HelperFunctions.ToBitString(bitArray, 0, 32));
+            Console.WriteLine("Received MyPlatoonId: " + HelperFunctions.ToBitString(bitArray, 288, 320));
+            Console.WriteLine("Received Manuever: " + HelperFunctions.ToBitString(bitArray, 320, 328));
+            Console.WriteLine("Received DissolveStatus: " + HelperFunctions.ToBitString(bitArray, 344, 352));
+            Console.WriteLine($"Topic: {topic}. Message Received: {JsonConvert.SerializeObject(payload, Formatting.Indented)}");
             //JOIN ACCEPTED
             var key = ConsoleKey.A;
             if (key == ConsoleKey.A)
@@ -177,15 +217,27 @@ namespace Mqtt.LeadClient
               {
                 payload.Maneuver = 2;
                 var message = new BitArray(bitcount);
-                message.Set(0, true);
+                //StationId 0-31
+                message.Set(31, true);
+                //MyPlatoonId 288-319
+                message.Set(319, true);
+
+                //Muanuever 320-322
                 message.Set(320, false);
                 message.Set(321, true);
                 message.Set(322, false);
+
+
+                Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+                Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+                Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+                Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
+                Console.WriteLine("Message Sent: " + Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
+
                 var pubtopic = "platooning/message";
                 _ = PublishAsync(
                           pubtopic,
                           Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
-                Console.WriteLine($"Publish Topic: {pubtopic}. Message Received: {Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message))}");
               }
             }
             //JOIN REJECTED
@@ -195,10 +247,23 @@ namespace Mqtt.LeadClient
               {
                 payload.Maneuver = 3;
                 var message = new BitArray(bitcount);
-                message.Set(0, true);
+                //StationId 0-31
+                message.Set(31, true);
+
+                //MyPlatoonId 288-319
+                message.Set(319, true);
+
+                //Muanuever 320-322
                 message.Set(320, false);
                 message.Set(321, true);
                 message.Set(322, true);
+
+
+                Console.WriteLine("StationId: " + HelperFunctions.ToBitString(message, 0, 32));
+                Console.WriteLine("MyPlatoonId: " + HelperFunctions.ToBitString(message, 288, 320));
+                Console.WriteLine("Manuever: " + HelperFunctions.ToBitString(message, 320, 328));
+                Console.WriteLine("DissolveStatus: " + HelperFunctions.ToBitString(message, 344, 352));
+
                 _ = PublishAsync(
                           "platooning/message",
                           Encoding.ASCII.GetString(HelperFunctions.BitArrayToByteArray(message)));
