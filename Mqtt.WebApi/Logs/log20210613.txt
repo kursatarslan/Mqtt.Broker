@@ -1,0 +1,8 @@
+2021-06-13 22:46:22.194 +03:00 [ERR] An error occurred using the connection to database 'mqtt' on server 'tcp://localhost:5432'.
+2021-06-13 22:46:22.226 +03:00 [ERR] An error occurred using the connection to database 'mqtt' on server 'tcp://localhost:5432'.
+2021-06-13 22:46:23.367 +03:00 [INF] OnStarted has been called.
+2021-06-13 22:48:18.935 +03:00 [INF] OnStopping has been called.
+2021-06-13 22:48:18.953 +03:00 [INF] OnStopped has been called.
+2021-06-13 22:48:25.924 +03:00 [INF] OnStarted has been called.
+2021-06-13 22:50:25.153 +03:00 [INF] New connection: ClientId = leadVehicle1, Endpoint = [::1]:50418, Username = test, CleanSession = True
+2021-06-13 22:50:45.436 +03:00 [INF] New connection: ClientId = followingVehicle1, Endpoint = [::1]:50454, Username = test, CleanSession = True
