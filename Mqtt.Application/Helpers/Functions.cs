@@ -49,37 +49,20 @@ namespace Mqtt.Application.Helpers
 
       return sb.ToString();
     }
+
+    private static uint Byte4UInt(byte[] b, int startIndex)
+    {
+      return (uint)(((b[startIndex] & 0xff) << 24) | ((b[1 + startIndex] & 0xff) << 16) | ((b[2 + startIndex] & 0xff) << 8) | (b[3 + startIndex] & 0xff));
+    }
+
     public static Payload GetPayload(byte[] serverPayload)
     {
-      /*string bin_strng = "1100110001";
-      int number = 0;
-
-      number = Convert.ToInt32(bin_strng, 2);
-      Console.WriteLine("Number value of binary \"{0}\" is = {1}",
-          bin_strng, number);
-
-      bin_strng = "1111100000110001";
-      number = Convert.ToInt32(bin_strng, 2);
-      Console.WriteLine("Number value of binary \"{0}\" is = {1}",
-          bin_strng, number);
-      */
-
       var payload = new Payload();
-      var bitArray = new BitArray(serverPayload);
 
-      payload.StationId = Convert.ToUInt32(Functions.ToBitString(bitArray, 0, 32), 2);
-      payload.MyPlatoonId = Convert.ToUInt32(Functions.ToBitString(bitArray, 288, 320), 2);
-      payload.Maneuver = (Maneuver)Convert.ToUInt32(Functions.ToBitString(bitArray, 320, 323), 2);
-      // payload.PlatoonGap = Convert.ToInt32(Functions.ToBitString(bitArray, 3, 11), 2);
-      //payload.PlatoonOverrideStatus = Convert.ToInt32(Functions.ToBitString(bitArray, 11, 12), 2) != 0;
-      //payload.VehicleRank = Convert.ToInt32(Functions.ToBitString(bitArray, 12, 16), 2);
-      //payload.BreakPedal = Convert.ToInt32(Functions.ToBitString(bitArray, 16, 23), 2);
-      payload.PlatoonDissolveStatus = Convert.ToUInt32(Functions.ToBitString(bitArray, 344, 352), 2) != 0;
-      //payload.StreamingRequests = Convert.ToInt32(Functions.ToBitString(bitArray, 56, 58), 2);
-      //payload.V2HealthStatus = Convert.ToInt32(Functions.ToBitString(bitArray, 58, 59), 2) != 0;
-      //payload.TruckRoutingStaus = Convert.ToInt32(Functions.ToBitString(bitArray, 59, 61), 2);
-      //payload.RealPayload = Encoding.ASCII.GetString(serverPayload);
-
+      payload.StationId = Byte4UInt(serverPayload, 0);
+      payload.MyPlatoonId = Byte4UInt(serverPayload, 36);
+      payload.Maneuver = (Maneuver)(serverPayload[40] & 0x0f);
+      payload.PlatoonDissolveStatus = serverPayload[43] != 0;
       return payload;
     }
 

@@ -1,14 +1,9 @@
 namespace Mqtt.Domain.Enums
 {
-    public enum Maneuver
-    {
-        Unavailable = 0,
-        JoinRequest,
-        JoinAccepted,
-        JoinRejected,
-        SplitRequest,
-        MergeRequest,
-        ManueverCompleted,
-        CreatePlatoon
-    }
+  public enum Maneuver
+  {
+    JoinRequest = 11,
+    JoinAccepted = 12,
+    JoinRejected = 13
+  }
 }

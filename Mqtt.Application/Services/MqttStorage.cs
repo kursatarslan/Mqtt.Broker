@@ -13,17 +13,17 @@ using MQTTnet.Server;
 
 namespace Mqtt.Application.Services
 {
-    public class MqttStorage : IMqttServerStorage
+  public class MqttStorage : IMqttServerStorage
+  {
+    private readonly IServiceProvider _serviceProvider;
+    public MqttStorage(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
-        public MqttStorage(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
-        
-        public  Task SaveRetainedMessagesAsync(
-            IList<MqttApplicationMessage> messages)
-        {/*
+      _serviceProvider = serviceProvider;
+    }
+
+    public Task SaveRetainedMessagesAsync(
+        IList<MqttApplicationMessage> messages)
+    {/*
             using (var newcontext = new DataContext(new DbContextOptions<DataContext>()))
             {
                 foreach (var message in messages)
@@ -41,24 +41,24 @@ namespace Mqtt.Application.Services
             }*/
 
 
-           
-            messages.Clear();
-            return Task.CompletedTask;
-        }
 
-        public Task<IList<MqttApplicationMessage>> LoadRetainedMessagesAsync()
-        {
-            var context = _serviceProvider.GetRequiredService<DataContext>();
-            
-            var messages = context.MqttMessages;
-            IList<MqttApplicationMessage> lst = messages.Select(m => new MqttApplicationMessage
-            {
-                Payload = Encoding.UTF8.GetBytes(m.Message),
-                Topic = m.Topic,
-                Retain = true,
-                ContentType = m.ContentType,
-            }).ToList();
-            return Task.FromResult(lst);
-        }
+      messages.Clear();
+      return Task.CompletedTask;
     }
+
+    public Task<IList<MqttApplicationMessage>> LoadRetainedMessagesAsync()
+    {
+      var context = _serviceProvider.GetRequiredService<DataContext>();
+
+      var messages = context.MqttMessages;
+      IList<MqttApplicationMessage> lst = messages.Select(m => new MqttApplicationMessage
+      {
+        Payload = Encoding.UTF8.GetBytes(m.Message),
+        Topic = m.Topic,
+        Retain = true,
+        ContentType = m.ContentType,
+      }).ToList();
+      return Task.FromResult(lst);
+    }
+  }
 }

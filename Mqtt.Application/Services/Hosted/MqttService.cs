@@ -17,6 +17,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mqtt.Application.Helpers;
 using Mqtt.Domain.Enums;
 using MQTTnet.Client.Receiving;
+using MQTTnet;
+using MQTTnet.Protocol;
 
 namespace Mqtt.Application.Services.Hosted
 {
@@ -31,6 +33,20 @@ namespace Mqtt.Application.Services.Hosted
     //private int _dataLength = 61;
     public event EventHandler<byte[]> DataReceived;
     public IMqttServer Server { get; set; }
+
+    private void sendToClient(string clientId, byte[] payload)
+    {
+      //Console.WriteLine("Sending Payload to " + clientId + ":" + payload.Length);
+      //Console.WriteLine("Base64:" + Convert.ToBase64String(payload));
+
+      Server.PublishAsync(new MqttApplicationMessage()
+      {
+        Topic = $"platooning/{clientId}",
+        Payload = payload,
+        QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce
+      });
+    }
+
 
     string ToBitString(BitArray bits, int indexStart, int indexFinish)
     {
@@ -179,14 +195,7 @@ namespace Mqtt.Application.Services.Hosted
          {
            if (e.ClientId == null) return;
 
-
-           var bitArray = new BitArray(e.ApplicationMessage.Payload);
-           //  Console.WriteLine("Byte Count:" + bitArray.Count / 8);
-           //Console.WriteLine("All " + ToBitString(bitArray, 0, 1400));
-           //  Console.WriteLine("Received StationId: " + ToBitString(bitArray, 0, 32));
-           //  Console.WriteLine("Received MyPlatoonId: " + ToBitString(bitArray, 288, 320));
-           //  Console.WriteLine("Received Manuever: " + ToBitString(bitArray, 320, 328));
-           //  Console.WriteLine("Received DissolveStatus: " + ToBitString(bitArray, 344, 352));
+           //Console.WriteLine($"Received{ e.ApplicationMessage.Payload.Length}: {JsonConvert.SerializeObject(Functions.GetPayload(e.ApplicationMessage.Payload), Formatting.Indented)}");
 
            // If in an existing platoon
            var vehiclePlatoon = _repo.GetPlatoon().FirstOrDefault(a => a.ClientId == e.ClientId);
@@ -198,7 +207,7 @@ namespace Mqtt.Application.Services.Hosted
                var platoonFollowers = _repo.GetPlatoon().Where(p => p.Enable && p.IsLead == false).ToList();
                foreach (var follower in platoonFollowers)
                {
-                 Server.PublishAsync("platooning/" + follower.ClientId, Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+                 sendToClient(follower.ClientId, e.ApplicationMessage.Payload);
                }
 
                var payload = Functions.GetPayload(e.ApplicationMessage.Payload);
@@ -219,7 +228,7 @@ namespace Mqtt.Application.Services.Hosted
                    {
                      follower.Enable = true;
                      _repo.UpdatePlatoon(follower);
-                     Server.PublishAsync("platooning/" + follower.ClientId, Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+                     sendToClient(follower.ClientId, e.ApplicationMessage.Payload);
                    }
                  }
                  else
@@ -230,7 +239,7 @@ namespace Mqtt.Application.Services.Hosted
                      if (follower != null)
                      {
                        _repo.DeletePlatoon(follower);
-                       Server.PublishAsync("platooning/" + follower.ClientId, Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+                       sendToClient(follower.ClientId, e.ApplicationMessage.Payload);
                      }
                    }
                  }
@@ -239,7 +248,8 @@ namespace Mqtt.Application.Services.Hosted
              else
              {
                var platoonLead = _repo.GetPlatoon().FirstOrDefault(p => p.Enable == true && p.IsLead == true);
-               Server.PublishAsync("platooning/" + platoonLead.ClientId, Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+               sendToClient(platoonLead.ClientId, e.ApplicationMessage.Payload);
+
                if (Functions.GetPayload(e.ApplicationMessage.Payload).PlatoonDissolveStatus)
                {
                  _repo.DeletePlatoon(vehiclePlatoon);
@@ -249,7 +259,6 @@ namespace Mqtt.Application.Services.Hosted
            else
            {
              var payload = Functions.GetPayload(e.ApplicationMessage.Payload);
-             _logger.LogWarning("MyPlatoonId: " + payload.MyPlatoonId);
              //Create Platoon
              if (payload.MyPlatoonId > 0)
              {
@@ -280,7 +289,7 @@ namespace Mqtt.Application.Services.Hosted
                      PlatoonRealId = "1"
                    };
                    _repo.AddPlatoon(followingPlatoon);
-                   Server.PublishAsync("platooning/" + platoonLead.ClientId, Encoding.ASCII.GetString(e.ApplicationMessage.Payload));
+                   sendToClient(platoonLead.ClientId, e.ApplicationMessage.Payload);
                  }
                }
              }
