@@ -92,11 +92,11 @@ namespace Mqtt.FollowerClient
 
     public static byte[] BitArrayToByteArray(BitArray bits)
     {
-      Console.WriteLine("Bits 318" + bits[318]);
-      Console.WriteLine("Bits 319" + bits[319]);
+      // Console.WriteLine("Bits 318" + bits[318]);
+      // Console.WriteLine("Bits 319" + bits[319]);
       var ret = new byte[(bits.Length - 1) / 8 + 1];
       bits.CopyTo(ret, 0);
-      Console.WriteLine(ret[39]);
+      // Console.WriteLine(ret[39]);
       return ret;
     }
 

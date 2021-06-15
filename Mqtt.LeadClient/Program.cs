@@ -203,10 +203,10 @@ namespace Mqtt.LeadClient
             var payload = HelperFunctions.GetPayload(e.ApplicationMessage.Payload);
             //  var py = HelperFunctions.ToBitString(new BitArray(e.ApplicationMessage.Payload), 0, bitcount);
 
-            Console.WriteLine("Received StationId: " + HelperFunctions.ToBitString(bitArray, 0, 32));
-            Console.WriteLine("Received MyPlatoonId: " + HelperFunctions.ToBitString(bitArray, 288, 320));
-            Console.WriteLine("Received Manuever: " + HelperFunctions.ToBitString(bitArray, 320, 328));
-            Console.WriteLine("Received DissolveStatus: " + HelperFunctions.ToBitString(bitArray, 344, 352));
+            // Console.WriteLine("Received StationId: " + HelperFunctions.ToBitString(bitArray, 0, 32));
+            // Console.WriteLine("Received MyPlatoonId: " + HelperFunctions.ToBitString(bitArray, 288, 320));
+            // Console.WriteLine("Received Manuever: " + HelperFunctions.ToBitString(bitArray, 320, 328));
+            // Console.WriteLine("Received DissolveStatus: " + HelperFunctions.ToBitString(bitArray, 344, 352));
             Console.WriteLine($"Topic: {topic}. Message Received: {JsonConvert.SerializeObject(payload, Formatting.Indented)}");
             //JOIN ACCEPTED
             var key = ConsoleKey.A;

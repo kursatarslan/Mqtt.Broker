@@ -181,12 +181,12 @@ namespace Mqtt.Application.Services.Hosted
 
 
            var bitArray = new BitArray(e.ApplicationMessage.Payload);
-           Console.WriteLine("Byte Count:" + bitArray.Count / 8);
-           Console.WriteLine("All " + ToBitString(bitArray, 0, 1400));
-           Console.WriteLine("Received StationId: " + ToBitString(bitArray, 0, 32));
-           Console.WriteLine("Received MyPlatoonId: " + ToBitString(bitArray, 288, 320));
-           Console.WriteLine("Received Manuever: " + ToBitString(bitArray, 320, 328));
-           Console.WriteLine("Received DissolveStatus: " + ToBitString(bitArray, 344, 352));
+           //  Console.WriteLine("Byte Count:" + bitArray.Count / 8);
+           //Console.WriteLine("All " + ToBitString(bitArray, 0, 1400));
+           //  Console.WriteLine("Received StationId: " + ToBitString(bitArray, 0, 32));
+           //  Console.WriteLine("Received MyPlatoonId: " + ToBitString(bitArray, 288, 320));
+           //  Console.WriteLine("Received Manuever: " + ToBitString(bitArray, 320, 328));
+           //  Console.WriteLine("Received DissolveStatus: " + ToBitString(bitArray, 344, 352));
 
            // If in an existing platoon
            var vehiclePlatoon = _repo.GetPlatoon().FirstOrDefault(a => a.ClientId == e.ClientId);

@@ -178,10 +178,10 @@ namespace Mqtt.FollowerClient
 
             var bitArray = new BitArray(e.ApplicationMessage.Payload);
 
-            Console.WriteLine("Received StationId: " + HelperFunctions.ToBitString(bitArray, 0, 32));
-            Console.WriteLine("Received MyPlatoonId: " + HelperFunctions.ToBitString(bitArray, 288, 320));
-            Console.WriteLine("Received Manuever: " + HelperFunctions.ToBitString(bitArray, 320, 328));
-            Console.WriteLine("Received DissolveStatus: " + HelperFunctions.ToBitString(bitArray, 344, 352));
+            // Console.WriteLine("Received StationId: " + HelperFunctions.ToBitString(bitArray, 0, 32));
+            // Console.WriteLine("Received MyPlatoonId: " + HelperFunctions.ToBitString(bitArray, 288, 320));
+            // Console.WriteLine("Received Manuever: " + HelperFunctions.ToBitString(bitArray, 320, 328));
+            // Console.WriteLine("Received DissolveStatus: " + HelperFunctions.ToBitString(bitArray, 344, 352));
 
             var payload = HelperFunctions.GetPayload(e.ApplicationMessage.Payload);
             Console.WriteLine($"Topic: {topic}. Message Received: {JsonConvert.SerializeObject(payload, Formatting.Indented)}");
